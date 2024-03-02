@@ -6,8 +6,11 @@ The Band Name Generator is a simple Python script that generates creative band n
 ## How to Use
 1. Run the script in a Python-enabled terminal.
 2. When prompted, enter the name of the city you grew up in.
-3. Next, enter a great pet name when prompted.
-4. The script will then present you with a list of potential band names based on your input.
+   ![Terminal screen: welcome screen, prompting user for city they grew up in.](./images/prompt1.png)
+4. Next, enter a great pet name when prompted.
+    ![Terminal screen: user prompt to enter pet name.](./images/prompt2.png)
+6. The script will then present you with a list of potential band names based on your input.
+   ![Terminal screen: user provide band name options](./images/prompt3.png)
 
 ## Features
 - Cross-platform compatibility: Clears the terminal window on both Windows and Unix systems.
