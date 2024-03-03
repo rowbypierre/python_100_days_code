@@ -3,9 +3,9 @@
 ## The Complete Python Pro Bootcamp
 
 ### Introduction
-This repository is ever growing and will eventually consist of 100 projects. The 100 projects are a part of the Complete the python developer course: [100 Days of Code: The Complete Python Pro Bootcamp](https://www.udemy.com/course/100-days-of-code/) led by Dr. Angela Yu.
+This repository is ever growing and will eventually consist of 100 projects. The 100 projects are a part of the Complete Python Developer course: [100 Days of Code: The Complete Python Pro Bootcamp](https://www.udemy.com/course/100-days-of-code/) led by Dr. Angela Yu.
 
-Assignments from the course have been significantly modified to incorpate uniqueness and distinguishable code from the samples provided throughout the course.
+Assignments from the course have been significantly modified to incorporate uniqueness and distinguishable code from the samples provided throughout the course.
 
 ### Tools and Technologies Utilized
 - Python 3 - the latest version of Python
