@@ -20,6 +20,7 @@ def bill_split():
     
     # calculate splits, prompt user    
     split = round((float(bill_total) * (1 + float(tip_pct) / 100)) / int(head_count), 2)
+    split = "{:.2f}".format(split)
     system("cls" if name == "nt" else "clear")
     print(f"\nEvery person should pay: ${split}")
     
