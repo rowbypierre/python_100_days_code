@@ -77,7 +77,7 @@ if __name__ == "__main__":
     @f,:::::::::::;::::::::::::;::;;;;;::1G@@@@@@@@@@@@@@@@@@@@@@t:;i1t1ttt1111t1tt1ttttttttttttttttttC@""")
 
     print("\nWelcome to the Once in a Lifttime Adventure. \nGoodluck!")
-    pause(1)
+    pause(5)
     clear_screen()
     
     prompt = """You start at a familiar crossroads but this time., 
@@ -172,7 +172,7 @@ if __name__ == "__main__":
     OR, 
     2. Tower of Secrets, 
     OR, 
-    3. Towe of the Unkown"""
+    3. Tower of the Unknown"""
     prompt_parser(prompt)
     
     counter = 0
@@ -211,7 +211,7 @@ if __name__ == "__main__":
     Which door do you enter:, 
     1. The one guarded by a knight,
     OR,
-    2. The other by a bishop."""
+    2. The other by a bishop"""
     prompt_parser(prompt)
     
     counter = 0
@@ -250,11 +250,11 @@ if __name__ == "__main__":
     At the heart of the labyrinth - you discover a well., 
     The well is actually a portal to a subterranean cave where the treasure is said to be guarded by a dragon.,
     You must choose between three tunnels:,
-    1. Tunnel filled with a faint glow.,
+    1. Tunnel filled with a faint glow,
     OR,
-    2. Tunnel with sound of running water.,
+    2. Tunnel with sound of running water,
     OR,
-    3. Tunnel with no sound."""
+    3. Tunnel with no sound"""
     prompt_parser(prompt)
     
     counter = 0
