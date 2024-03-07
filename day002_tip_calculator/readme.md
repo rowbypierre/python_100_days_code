@@ -20,8 +20,8 @@ This simple Python script allows users to easily split a bill among a group. It 
 ## Getting Started
 To get started with the Band Name Generator, follow these steps:
 1. Ensure Python 3.x is installed on your system.
-2. Download the `bill_split.py` script.
+2. Download the `main.py` script.
 3. Open a terminal.
 4. Navigate to the script's directory.
-5. Run the script: `python bill_split.py`
+5. Run the script: `python main.py`
 6. Follow the on-screen prompts.
