@@ -22,8 +22,8 @@ The Band Name Generator is a simple Python script that generates creative band n
 ## Getting Started
 To get started with the Band Name Generator, follow these steps:
 1. Ensure Python 3.x is installed on your system.
-2. Download the script `band_name_gen.py`.
+2. Download the script `main.py`.
 3. Open your terminal or command prompt.
 4. Navigate to the directory where the script is located.
-5. Run the script using the command `python band_name_gen.py`.
+5. Run the script using the command `python main.py`.
 6. Follow the on-screen prompts.
