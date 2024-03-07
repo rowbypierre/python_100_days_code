@@ -23,8 +23,8 @@ Embark on a thrilling text-based adventure with this Python game. Players start 
 ## Getting Started
 To begin your quest in the Treasure Quest Adventure, follow these steps:
 1. Confirm Python 3.x is installed on your machine.
-2. Download the `treasure_quest.py` script.
+2. Download the `main.py` script.
 3. Open a terminal window.
 4. Change directory to where the script is located.
-5. Execute the script: `python treasure_quest.py`
+5. Execute the script: `python main.py`
 6. Make your choices as prompted on the screen.
