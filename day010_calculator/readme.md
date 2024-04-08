@@ -1,6 +1,3 @@
-Based on the content of your Calculator script, here's a straightforward and concise README template for it:
-
----
 
 # Simple Calculator Script
 
