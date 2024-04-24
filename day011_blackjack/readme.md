@@ -12,13 +12,17 @@ This Python script is a digital version of the classic card game Blackjack, desi
 - Options to draw additional cards or hold.
 - Checks for winning, losing, or tie conditions.
 
-    ![](./images/welcome_screen_user_lose.png)
+    !["Gamplay: welcome screeen and user wins."](./images/welcome_screen_user_win.png)      ![Gamplay: welcome screeen and user loses.](./images/welcome_screen_user_lose.png)
 
-    ![](./images/user_lose_dealer_win.png)
 
-    ![](./images/user_win_ace_convert_to_1.png)
+    ![Gamplay: user wins by ace converted to 1.](./images/user_win_ace_convert_to_1.png)          ![Gamplay: user win by have higher card total.](./images/user_win.png)
 
-    ![](./images/user_win_dealer_bust.png)
+
+    ![Gamplay: user bust, dealer wins by remaining below 21.](./images/user_lose_dealer_win.png)     ![Gamplay: user wins through card total of 21.](./images/user_blackjack.png)
+
+
+    ![Gamplay: dealer and player total equal points.](./images/draw.png)
+
 
 
 ## System Requirements
