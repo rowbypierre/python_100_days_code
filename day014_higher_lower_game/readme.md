@@ -14,13 +14,13 @@ This is a Python-based command-line game that challenges players to guess which 
 ### Landing Screen
 ![Landing screen with the game title and instructions.](./images/landing_screen.png "Landing Screen")
 
-### Account Comparison Example
+### Account Comparison 
 ![An example comparison between two accounts.](./images/first_comparison.png "Account Comparison Example")
 
 ### Incorrect Guess Feedback
 ![Feedback screen for an incorrect guess.](./images/first_comparison_incorrect_input.png "Incorrect Guess Feedback")
 
-### Correct Streak Example
+### Correct Streak 
 ![Example of a correct streak count.](./images/correct_input_streak_2.png "Correct Streak Example")
 
 ## System Requirements
