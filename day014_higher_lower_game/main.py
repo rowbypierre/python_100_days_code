@@ -1,5 +1,4 @@
-import art, random, os, time
-from game_data import data
+import art, random, os, time, game_data
 def higher_lower_game():
     """
     Determine social media account with greater number of followers. Gameplayers input (numeric value '1' or '2') required
@@ -7,6 +6,8 @@ def higher_lower_game():
     """
     print(art.logo + "\nGuess the person or organization with MORE social media followers?")
 
+    data = game_data.data
+    random.shuffle(data)
     dataset_size = len(data)
     continue_play = True
 
