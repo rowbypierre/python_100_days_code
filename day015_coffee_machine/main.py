@@ -51,6 +51,11 @@ functions = {
     }
 }
 
+
+def shutdown_machine():
+    exec(functions["3"]["component"])
+
+
 profit = 0
 coffee_machine_running = True
 
@@ -143,6 +148,15 @@ while coffee_machine_running:
                         break
                     elif deposit < MENU[user_selection]["cost"]:
                         print(f"Deposit {convert_int_to_usd(MENU[user_selection]["cost"] - deposit)} for drink.\n")
+
+                current_deposit_return = int(input(f"\nWould you like deposited: "
+                                                   f"{convert_int_to_usd(deposit)} returned?"
+                                                   f"\nEnter 1 |\t'Yes' \nEnter 2 |\t'No'\n> "))
+                if current_deposit_return == 1:
+                    print(f"\n{convert_int_to_usd(deposit)} returned...")
+                    continue_depositing = False
+                    shutdown_machine()
+
     # TODO: Print ingredient inventory.
     elif function_selection == "2":
         print("")
@@ -151,9 +165,9 @@ while coffee_machine_running:
             print(ingredient.capitalize() + ":\t" + str(resources[ingredient]))
     # TODO: Provide option to exit program.
     elif function_selection == "3":
-        exec(functions[function_selection]["component"])
+        shutdown_machine()
 
     if int(input("\nPerform another operation? \nEnter 1 |\t'Yes' \nEnter 2 |\t'No'\n> ").strip()) != 1:
-        exec(functions["3"]["component"])
+        shutdown_machine()
     else:
         print("")
