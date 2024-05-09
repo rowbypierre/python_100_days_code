@@ -19,6 +19,9 @@ Using object-oriented programming, this Python program simulates a coffee machin
 ### Successful Order
 ![User successfully purchases a latte, inserting enough coins and receiving the drink with change returned.](./images/successful_coffee_order.png "Successful Order")
 
+### Report Screen
+![User enters "report" then print screen of water, coffee, and milk levels is displayed. Additionally, the total amount of money is displayed.](./images/report_function.png "Report Function")
+
 ## System Requirements
 - Python 3.x
 
