@@ -14,5 +14,4 @@ quiz = Quiz(quiz_questions)
 
 while quiz.more_questions_remain():
     quiz.next_question()
-    quiz.next_question()
     quiz.is_quiz_complete()
