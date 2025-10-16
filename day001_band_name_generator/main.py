@@ -54,7 +54,7 @@ def band_name_gen():
         - Pet name (str)
 
     Returns:
-        Note: Prints generated band names.
+        None: Prints generated band names.
 
     Raises:
         ValueError: If inputs contain non-alphabetic characters.
