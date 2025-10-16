@@ -1,6 +1,7 @@
 import os
 
-def os_cmmd(win_cmmd, unix_cmmd, type='run'):
+
+def os_cmmd(win_cmmd, unix_cmmd, type="run"):
     """
     Run or read a command depending on the OS (Operating System).
 
@@ -19,11 +20,11 @@ def os_cmmd(win_cmmd, unix_cmmd, type='run'):
     try:
         cmd = win_cmmd if os.name == "nt" else unix_cmmd
 
-        if type == 'run':
+        if type == "run":
             return_code = os.system(command=cmd)
             if not return_code == 0:
                 raise RuntimeError(f"Command failed, exit code: {return_code}")
-        elif type == 'read':
+        elif type == "read":
             ouput = os.popen(cmd=cmd).read().strip()
             return ouput
         else:
@@ -42,10 +43,11 @@ def clear():
     - 'clear' for Unix/Linux/ macOs
     """
     os_cmmd(win_cmmd="cls", unix_cmmd="clear", type="run")
-    
+
+
 def band_name_gen():
     """
-    Generate 10 band names from user-input city and pet name. 
+    Generate 10 band names from user-input city and pet name.
 
     Prompts:
         - City name (str)
@@ -64,10 +66,10 @@ def band_name_gen():
                     \nWelcome {user} 
                     \nWhat's the name of the city you up in? \n""").strip()
         pet = input("\nEnter a great pet name? \n").strip()
-    
+
         if not (city.isalpha() & pet.isalpha()):
             raise TypeError("string characters must be alphabetic")
-        
+
         band_patterns = [
             "The {} Beats of {}",
             "The {} {} Chorus",
@@ -77,15 +79,16 @@ def band_name_gen():
             "Echoing {} of {}",
             "{} {} Ensemble",
             "Groovy {} of {}",
-            "Sonic {} Serenade in {}"
+            "Sonic {} Serenade in {}",
         ]
 
         clear()
-        for pattern in band_patterns: 
+        for pattern in band_patterns:
             print(pattern.format(pet.capitalize(), city.capitalize()))
 
     except Exception as error:
         print(f"Error: {error}")
-    
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     band_name_gen()
