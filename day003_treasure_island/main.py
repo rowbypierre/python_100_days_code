@@ -1,30 +1,34 @@
-import os, time, sys
+import os
+import time
 
-def end():
-    sys.exit()
-    
+
 def clear_screen():
+    """Clear terminal screen."""
     os.system("cls" if os.name == "nt" else "clear")
 
+
 def pause(seconds):
+    """Create delay in terminal screen for provided number of seconds (float)."""
     time.sleep(seconds)
-    
+
+
 def prompt_parser(prompt):
-    prompt = prompt.split(",")
+    """Format and print game prompt (str) for readability."""
     counter = 0
-    for line in prompt:
+    clean_prompt = map(lambda x: x.strip(), prompt.split(","))
+    for line in clean_prompt:
         counter += 1
-        line = str(line).strip()
         if line.count("OR") != 0:
             print("\n" + line + "\n")
         elif line.count(":") != 0:
             print(line + "\n")
         else:
             print(line)
-    
-if __name__ == "__main__":
 
-    print("""
+
+if __name__ == "__main__":
+    print(
+        """
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@88000GCCGGCGG0088@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@80GCftt1;:::,...  .  .,,,:::;i1tLCG08@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     @@@@@@@@@@@@@@@@@@@@@@@@@@0GCf;.                                   .;tCG08@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -74,264 +78,125 @@ if __name__ == "__main__":
     81          .                        10@@@@@@@@@@@@@@@@@@@@@@L:    .,...         ...              i8
     @1 .        .       ..       ..      i0@@@@@@@@@@@@@@@@@@@@@@;    .   ....       ..               i8
     @1                  .                ;G@@@@@@@@@@@@@@@@@@@@@@i                                    i8
-    @f,:::::::::::;::::::::::::;::;;;;;::1G@@@@@@@@@@@@@@@@@@@@@@t:;i1t1ttt1111t1tt1ttttttttttttttttttC@""")
-
-    print("\nWelcome to the Once in a Lifttime Adventure. \nGoodluck!")
+    @f,:::::::::::;::::::::::::;::;;;;;::1G@@@@@@@@@@@@@@@@@@@@@@t:;i1t1ttt1111t1tt1ttttttttttttttttttC@""",
+        "\nWelcome to the Once in a Lifttime Adventure. \nGoodluck!",
+    )
     pause(5)
     clear_screen()
-    
-    prompt = """You start at a familiar crossroads but this time., 
-    The journey unfolds quite differently., 
-    You turn left and shortly encounter a wise old traveler., 
-    He offers you a choice:, 
-    1. To take a lantern and venture into the dark forest., 
-    OR, 
-    2. A shovel to dig near the ancient oak tree."""
-    prompt_parser(prompt)
-    
-    counter = 0
+
+    prompts = [
+        """You start at a familiar crossroads but this time., 
+            The journey unfolds quite differently., 
+            You turn left and shortly encounter a wise old traveler., 
+            He offers you a choice:, 
+            1. To take a lantern and venture into the dark forest., 
+            OR, 
+            2. A shovel to dig near the ancient oak tree.""",
+        """Choosing the lantern you head into the forest., 
+            There you find a hidden grove with three statues., 
+            Each statue has a riddle., 
+            With no time to think - which riddle do you solve:, 
+            1. The eagle, 
+            OR, 
+            2. The lion, 
+            OR, 
+            3. The dolphin""",
+        """By solving the eagle's riddle do you receive a silver key., 
+            With key in hand - you journey on to a castle shrouded in mist.,
+            The castle has three towers - each locked.,
+            Which tower do you unlock:, 
+            1. Tower of Whispers, 
+            OR, 
+            2. Tower of Secrets, 
+            OR, 
+            3. Tower of the Unknown""",
+        """Inside - you climb the spiral staircase to find a room with two doors., 
+            Which door do you enter:, 
+            1. The one guarded by a knight,
+            OR,
+            2. The other by a bishop""",
+        """ The knight allows you through his door - leading to a garden labyrinth., 
+            At the heart of the labyrinth - you discover a well., 
+            The well is actually a portal to a subterranean cave where the treasure is said to be guarded by a dragon.,
+            You must choose between three tunnels:,
+            1. Tunnel filled with a faint glow,
+            OR,
+            2. Tunnel with sound of running water,
+            OR,
+            3. Tunnel with no sound""",
+        """ Choosing the tunnel with the glow - you find the dragon asleep.,
+            The treasure is within reach.,
+            You must choose between:,
+            1. Taking the treasure and running fast.,
+            OR,
+            2. Carefully extracting the treasure without waking the dragon.,
+            OR,
+            3. Silently leaving and returning back a weapon capable of slaying the dragon.""",
+    ]
+
+    prompt_num = 0
+    input_count = 0
     input_limit = 6
-    decisions = [1, 2]
-    right_decision = 1
-    wrong_decision = 2
-    while counter < input_limit:                
-        counter += 1
-        decision = input("\nEnter 1 or 2: ")
-        if decision.isdigit() == False:
-            print("Input invalid.")
-        else:
-            decision = int(decision)
-            if  decision not in decisions:
+    choices = {
+        0: {"right": 1, "wrong": 2},
+        1: {"right": 1, "wrong": [2, 3]},
+        2: {"right": 1, "wrong": [2, 3]},
+        3: {"right": 1, "wrong": 2},
+        4: {"right": 1, "wrong": [2, 3]},
+        5: {"right": 2, "wrong": [1, 3]},
+    }
+
+    def all_choices():
+        """Return possible choices for game player as list."""
+        return [
+            numerals
+            for choice in choices[prompt_num].values()
+            for numerals in str(choice)
+            if numerals.isalnum()
+        ]
+
+    game_on = True
+
+    for prompt in prompts:
+        prompt_parser(prompts[prompt_num])
+
+        while game_on:
+            limit_hit = input_count >= input_limit
+
+            if not limit_hit:
+                decision = input(f"\nEnter {all_choices()}: ").strip()
+                valid_input = decision in all_choices()
+
+            if limit_hit or valid_input:
+                right_choice = int(decision) == choices[prompt_num]["right"]
+
+                if (not right_choice) or limit_hit:
+                    print("\nGame over. Hopefully you find the treasure next time.")
+                    game_on = False
+                    pause(2)
+                    break
+                elif right_choice:
+                    print("\n!!!GREAT DECISION!!!")
+                    counter = 0
+                    prompt_num += 1
+                    pause(2)
+                    clear_screen()
+                    break
+            elif not valid_input:
+                counter += 1
                 print("Input invalid.")
-            if decision == wrong_decision:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end()
-            elif decision == right_decision:
-                print("\n!!!GREAT DECISION!!!")
-                pause(2)
-                clear_screen()
-                break       
-            if counter == input_limit - 2:
-                print("Last attempt to input a valid input.")
-            elif counter == input_limit - 1:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end() 
-         
-    prompt = """Choosing the lantern you head into the forest., 
-    There you find a hidden grove with three statues., 
-    Each statue has a riddle., 
-    With no time to think - which riddle do you solve:, 
-    1. The eagle, 
-    OR, 
-    2. The lion, 
-    OR, 
-    3. The dolphin"""
-    prompt_parser(prompt)
-    
-    counter = 0
-    input_limit = 6
-    decisions = [1, 2, 3]
-    right_decision = 1
-    wrong_decisions = [2, 3]
-    while counter < input_limit:                
-        counter += 1
-        decision = input("\nEnter 1, 2, or 3: ")
-        if decision.isdigit() == False:
-            print("Input invalid.")
-        else:
-            decision = int(decision)
-            if  decision not in decisions:
-                print("Input invalid.")
-            if decision in wrong_decisions:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end()
-            elif decision == right_decision:
-                print("\n!!!GREAT DECISION!!!")
-                pause(2)
-                clear_screen()
-                break       
-            if counter == input_limit - 2:
-                print("Last attempt to input a valid input.")
-            elif counter == input_limit - 1:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end() 
-    
-    prompt = """By solving the eagle's riddle do you receive a silver key., 
-    With key in hand - you journey on to a castle shrouded in mist.,
-    The castle has three towers - each locked.,
-    Which tower do you unlock:, 
-    1. Tower of Whispers, 
-    OR, 
-    2. Tower of Secrets, 
-    OR, 
-    3. Tower of the Unknown"""
-    prompt_parser(prompt)
-    
-    counter = 0
-    input_limit = 6
-    decisions = [1, 2, 3]
-    right_decision = 1
-    wrong_decisions = [2, 3]
-    while counter < input_limit:                
-        counter += 1
-        decision = input("\nEnter 1, 2, or 3: ")
-        if decision.isdigit() == False:
-            print("Input invalid.")
-        else:
-            decision = int(decision)
-            if  decision not in decisions:
-                print("Input invalid.")
-            if decision in wrong_decisions:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end()
-            elif decision == right_decision:
-                print("\n!!!GREAT DECISION!!!")
-                pause(2)
-                clear_screen()
-                break       
-            if counter == input_limit - 2:
-                print("Last attempt to input a valid input.")
-            elif counter == input_limit - 1:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end() 
-    
-    prompt = """Inside - you climb the spiral staircase to find a room with two doors., 
-    Which door do you enter:, 
-    1. The one guarded by a knight,
-    OR,
-    2. The other by a bishop"""
-    prompt_parser(prompt)
-    
-    counter = 0
-    input_limit = 6
-    decisions = [1, 2]
-    right_decision = 1
-    wrong_decisions = [2]
-    while counter < input_limit:                
-        counter += 1
-        decision = input("\nEnter 1 or 2: ")
-        if decision.isdigit() == False:
-            print("Input invalid.")
-        else:
-            decision = int(decision)
-            if  decision not in decisions:
-                print("Input invalid.")
-            if decision in wrong_decisions:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end()
-            elif decision == right_decision:
-                print("\n!!!GREAT DECISION!!!")
-                pause(2)
-                clear_screen()
-                break       
-            if counter == input_limit - 2:
-                print("Last attempt to input a valid input.")
-            elif counter == input_limit - 1:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end() 
-    
-    prompt = """ The knight allows you through his door - leading to a garden labyrinth., 
-    At the heart of the labyrinth - you discover a well., 
-    The well is actually a portal to a subterranean cave where the treasure is said to be guarded by a dragon.,
-    You must choose between three tunnels:,
-    1. Tunnel filled with a faint glow,
-    OR,
-    2. Tunnel with sound of running water,
-    OR,
-    3. Tunnel with no sound"""
-    prompt_parser(prompt)
-    
-    counter = 0
-    input_limit = 6
-    decisions = [1, 2, 3]
-    right_decision = 1
-    wrong_decisions = [2, 3]
-    while counter < input_limit:                
-        counter += 1
-        decision = input("\nEnter 1, 2, or 3: ")
-        if decision.isdigit() == False:
-            print("Input invalid.")
-        else:
-            decision = int(decision)
-            if  decision not in decisions:
-                print("Input invalid.")
-            if decision in wrong_decisions:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end()
-            elif decision == right_decision:
-                print("\n!!!GREAT DECISION!!!")
-                pause(2)
-                clear_screen()
-                break       
-            if counter == input_limit - 2:
-                print("Last attempt to input a valid input.")
-            elif counter == input_limit - 1:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end()
-                
-    prompt = """ Choosing the tunnel with the glow - you find the dragon asleep.,
-    The treasure is within reach.,
-    You must choose between:,
-    1. Taking the treasure and running fast.,
-    OR,
-    2. Carefully extracting the treasure without waking the dragon.,
-    OR,
-    3. Silently leaving and returning back a weapon capable of slaying the dragon."""
-    prompt_parser(prompt)
-    
-    counter = 0
-    input_limit = 6
-    decisions = [1, 2, 3]
-    right_decision = 2
-    wrong_decisions = [1, 3]
-    while counter < input_limit:                
-        counter += 1
-        decision = input("\nEnter 1, 2, or 3: ")
-        if decision.isdigit() == False:
-            print("Input invalid.")
-        else:
-            decision = int(decision)
-            if  decision not in decisions:
-                print("Input invalid.")
-            if decision in wrong_decisions:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end()
-            elif decision == right_decision:
-                clear_screen()
-                print("\n!!!GREAT DECISION!!!\n")
-                print("You carefully extract the treasure without waking the dragon.")
-                print("This is done with a steady hand and a brave heart.")
-                print("You exit through a hidden path that leads back to the surface.")
-                print("Your ship awaits to carry you and your newfound riches.")
-                pause(30)
-                clear_screen()
-                break       
-            if counter == input_limit - 2:
-                print("Last attempt to input a valid input.")
-            elif counter == input_limit - 1:
-                print("\nGame over. Hopefully you find the treasure next time.")
-                pause(2)
-                clear_screen()
-                end()
+
+                if counter == input_limit - 1:
+                    print("Last attempt to input a valid input.")
+
+        clear_screen()
+        if not game_on:
+            break
+        elif prompt_num == max(list(choices.keys())) + 1:
+            print("""\n!!!GREAT DECISION!!!\n
+            \nYou carefully extract the treasure without waking the dragon.
+            \nThis is done with a steady hand and a brave heart.
+            \nYou exit through a hidden path that leads back to the surface.
+            \nYour ship awaits to carry you and your newfound riches.""")
+            pause(30)
+            clear_screen()
