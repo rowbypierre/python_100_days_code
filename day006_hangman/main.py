@@ -76,11 +76,7 @@ def hangman():
                     game_on = bad_guess != life
                     if game_on:
                         bad_guess += 1
-                        print(
-                            '\nIncorrect, "{}" does not exist in the word.'.format(
-                                guess
-                            )
-                        )
+                        print('\nIncorrect, "{}" does not exist in the word.'.format(guess))
                     else:
                         print("\n!!!YOU WERE HUNG!!!")
                         print(f"\n{game_word.upper()} was the mysyterious word.")
