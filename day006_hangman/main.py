@@ -1,66 +1,88 @@
-from hangman_misc import word_list, stages, logo
-import random, os, time
+from hangman_misc import word_list, hangmans, logo
+import random
+import os
+import time
+
 
 def clear():
+    """ "Clear terminal screen of Window or Unix-like system."""
     os.system("cls" if os.name == "nt" else "clear")
 
-clear()
-print(logo + "\nEnjoy this hangman game.")
-time.sleep(2)
-print("\nA random word has been selected.")
-time.sleep(2)
 
-lives = len(stages)
-lives_start = lives
-guess_attempts = 0
+def pause(sec=2):
+    """Pause before performing next action for provided second(s) (sec: int)."""
+    time.sleep(sec)
 
-word_choice = random.choice(word_list).lower()
-word_shell = []
-for count in range(0, len(word_choice)):
-    word_shell.append('_')
 
-while guess_attempts != lives_start + 1:
+def hangman():
+    """
+    Guess randomly selected word and hanging the man.
+
+    Prompts:
+        - guess (str): Single alphabet character.
+
+    Returns:
+        - None: Confirmation with correct guess, evolving hangman ascii drawing
+                with incorrect guesses.
+
+    Raises:
+        - ValueError: guess (str) input has numbers, spaces, or special characters.
+    """
     clear()
-    if ''.join(word_shell) == word_choice:
-        print("!!!YOU WON!!!")
-        print(f"\n{word_choice.capitalize()} was the mysyterious word.")
-        time.sleep(2)
-        break
-    else:
-        print(word_shell)
-        # print(f"\nFor testing purposees here is the word: {word_choice}")
-        lives_prompt = f"\nYou have {lives} lives."
-        if lives == 1:
-            print(lives_prompt.replace("lives", "life"))
-        else:
-            print(lives_prompt)
-        user_guess = input("\nGuess a letter: ").lower().strip()
-        if user_guess in word_choice and user_guess not in word_shell:
-            print("\nCorrect, \"{}\" exist in the chosen word.".format(user_guess))
-            time.sleep(2)
-            position = 0
-            for letter in word_choice:
-                if letter == user_guess:
-                    word_shell[position] = user_guess
-                position += 1 
-            print(f"\n{word_shell}")
-            time.sleep(2)  
-        elif user_guess in word_choice and user_guess in word_shell:
-            print("\nYou have already entered the letter \"{}\".".format(user_guess)) 
-            time.sleep(2)
-        else:
-            if lives > 1: 
-                print(stages[lives - 1])
-                time.sleep(2)
-                lives -= 1
-                guess_attempts += 1      
-                print("\nIncorrect, \"{}\" does not exist in the word.".format(user_guess))
-                time.sleep(2)
+    prompts = [
+        logo + "\nEnjoy this hangman game.",
+        "\nA random word has been selected.",
+    ]
+    for prompt in prompts:
+        print(prompt)
+        pause()
+
+    life = len(hangmans)
+    bad_guess = 1
+    game_word = random.choice(word_list).lower()
+    word_index = [(index, letter) for index, letter in enumerate(game_word)]
+    word_shell = ["_" for _ in range(len(game_word))]
+
+    game_on = True
+    try:
+        while game_on:
+            clear()
+            if "".join(word_shell) == game_word:
+                print(f"""!!!YOU WON!!!
+                    \n{game_word.capitalize()} was the mysyterious word.""")
+                pause()
+                break
             else:
-                clear()
-                print(stages[lives - 1])
-                print("\n!!!YOU WERE HUNG!!!")
-                time.sleep(2)
-                print(f"\n{word_choice.capitalize()} was the mysyterious word.")
-                time.sleep(2)
-                break     
+                life_prompt = f"\nYou have {life - bad_guess} chance(s) remaining."
+                print(str(word_shell) + "\n" + life_prompt)
+                guess = input("\nGuess a letter: ").lower().strip()
+                if not guess.isalpha() or len(guess) > 1:
+                    raise ValueError(f"Expecting 1 character, recieved: {guess}")
+                elif guess in game_word and guess not in word_shell:
+                    print('\nCorrect, "{}" exist in the chosen word.'.format(guess))
+                    pause()
+
+                    for index, letter in word_index:
+                        if guess == letter:
+                            word_shell[index] = guess
+
+                    print(f"\n{word_shell}")
+                elif guess in word_shell:
+                    print('\nYou have already entered the letter "{}".'.format(guess))
+                    pause()
+                else:
+                    print(hangmans[life - bad_guess])
+                    pause()
+                    game_on = bad_guess != life
+                    if game_on:
+                        bad_guess += 1
+                        print(
+                            '\nIncorrect, "{}" does not exist in the word.'.format(
+                                guess
+                            )
+                        )
+                    else:
+                        print("\n!!!YOU WERE HUNG!!!")
+                        print(f"\n{game_word.upper()} was the mysyterious word.")
+    except Exception as error:
+        print(f"Error: {error}")
