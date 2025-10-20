@@ -1,51 +1,108 @@
-import random, os
-
-letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
-
-os.system("cls" if os.name == "nt" else "clear")
-print("\nWelcome to the Password Generator!\n")
-nr_letters = ' '
-while nr_letters.isdigit() == False:
-    nr_letters= input("How many letters would you like in your password?\n") 
-    if nr_letters.isdigit() == False:
-        print("Enter numeric value only.\n") 
-
-nr_symbols = ' '
-while nr_symbols.isdigit() == False:
-    nr_symbols = input(f"How many symbols would you like?\n")
-    if nr_symbols.isdigit() == False:
-        print("Enter numeric value only.\n") 
-        
-nr_numbers = ' '
-while nr_numbers.isdigit() == False:
-    nr_numbers = input(f"How many numbers would you like?\n")
-    if nr_numbers.isdigit() == False:
-        print("Enter numeric value only.\n")
+import random
+import os
 
 
-nr_letters = int(nr_letters)
-nr_symbols = int(nr_symbols)
-nr_numbers = int(nr_numbers)
+char_types = {
+    "letters": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+    ],
+    "numbers": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    "symbols": ["!", "#", "$", "%", "&", "(", ")", "*", "+"],
+}
 
-password = ''        
-for x in range(1, nr_letters + 1):
-    letter = letters[random.randint(0, len(letters) - 1)]
-    password += ' ' + letter
 
-for x in range(1, nr_symbols + 1):
-    symbol = symbols[random.randint(0, len(symbols) - 1)]
-    password += ' ' + symbol
+def clear_screen():
+    """Clear terminal screen of Unix-like or Windows operating system."""
+    os.system("cls" if os.name == "nt" else "clear")
 
-for x in range(1, nr_numbers + 1):
-    number = numbers[random.randint(0, len(numbers) - 1)]
-    password += ' ' + number   
 
-password = password.split()
-random.shuffle(password)
-new_password = ''
-for key in password:
-    new_password += key 
-print(f"\nHere is a secure password: {new_password}\n")
-           
+def make_pass():
+    """
+    Generate password containing letters, numbers, and symbols.
+
+    Prompts:
+        - Desired number of letters (int).
+        - Desired number of numbers (int).
+        - Desired number of symbols (int).
+
+    Returns:
+        None: Print new password.
+
+    Raises:
+        ValueError: Prompted inputs not contain integer.
+    """
+    try:
+        clear_screen()
+        print("\nWelcome to the Password Generator!\n")
+
+        new_pass = list()
+        for char in char_types:
+            count = input(f"\nEnter desired number of {char}:\t").strip()
+            if isinstance(count, int):
+                raise ValueError(f"Input ({count} is invalid. Whole integer required.)")
+            else:
+                new_pass += random.choices(char_types[char], k=int(count))
+
+        random.shuffle(new_pass)
+        pass_str = "".join(new_pass)
+
+        clear_screen()
+        print(f"New password: {pass_str}")
+
+    except Exception as error:
+        print(f"Error: {error}")
+
+
+if __name__ == "__main__":
+    make_pass()
