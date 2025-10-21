@@ -1,87 +1,80 @@
-from os import system, name
 from art import logo
 
-alphabet = ['a', 'b', 'c', 'd', 
-            'e', 'f', 'g', 'h', 
-            'i', 'j', 'k', 'l', 
-            'm', 'n', 'o', 'p', 
-            'q', 'r', 's', 't', 
-            'u', 'v', 'w', 'x', 
-            'y', 'z']
+alphabet = [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+]
 
-def encrypt():
-    message = input("\nType message to encrypt: \n\n> ").strip()
-    cipher_message = ''
-    shifts = int(input("\nEnter number to displace each letter: \n\n> "))
-    if shifts / len(alphabet) > 1:
-        while True:
-            shifts -= len(alphabet)
-            if shifts <= len(alphabet):
-                break
-            
-    for character in message:
-        if character.isspace() or character.isalpha() == False:
-            cipher_message += character
-        else:
-            if character.isupper():
-                character = character.swapcase()
-                source_uppercase = True
-            position = alphabet.index(character)    
-            if position + shifts > len(alphabet) - 1:
-                new_character = alphabet[0 + ((position + shifts) - len(alphabet))] 
-                if source_uppercase == True:
-                    new_character = new_character.swapcase()
-                    source_uppercase = False
-                cipher_message += new_character
-            else:
-                new_character = alphabet[position + shifts] 
-                if source_uppercase == True:
-                    new_character = new_character.swapcase()
-                    source_uppercase = False
-                cipher_message += new_character
-    print("\n" + cipher_message)
 
-def decrypt():
-    cipher_message = input("\nType message to be decrypted: \n\n> ").strip()
-    decrypted_message = ''
-    shifts = int(input("\nEnter number each letter is displaced by: \n\n> "))
-    if shifts / len(alphabet) > 1:
-        while True:
-            shifts -= len(alphabet)
-            if shifts <= len(alphabet):
-                break
-            
-    for character in cipher_message:
-        if character.isspace() or character.isalpha() == False:                   
-            decrypted_message += character
-        else:
-            if character.isupper():
-                character = character.swapcase()
-                source_uppercase = True
-            position = alphabet.index(character)
-            if position - shifts < 0:
-                new_character = alphabet[len(alphabet) + (position - shifts)] 
-                if source_uppercase == True:
-                    new_character = new_character.swapcase()
-                    source_uppercase = False
-                decrypted_message += new_character
-            else:
-                new_character = alphabet[position - shifts] 
-                if source_uppercase == True:
-                    new_character = new_character.swapcase()
-                    source_uppercase = False
-                decrypted_message += new_character
-    print("\n" + decrypted_message)
- 
-if __name__ == "__main__":
-        
-    system("cls" if name == "nt" else "clear")
+def cyphering():
+    """
+    Encrypt or decrypt user text using Caesar Cipher.
+
+    Prompt:
+        - text (str): Text only containing charaters.
+        - key (int): Numeral to shift. key > 0 encrypt | key < 0 decrypt.
+
+    Returns:
+        - None: Encrypted text.
+
+    Raise:
+        - ValueError: Prompt key (int) not integer.
+    """
     print(logo)
-    while True:      
-        task = input("\nType: \n\"encode\"     -> encrypt \n\"decode\"     -> decrypt \n\"exit\"       -> exit \n\n> ").strip().lower()
-        if task == 'encode':
-            encrypt()       
-        elif task == "decode":
-            decrypt()
-        elif task == "exit":
-            break
+    text = input("Enter text to encrypt (str): ").strip().lower()
+    key = input("Enter cypher key (int): ").strip()
+    if not key.isdigit() and key == "0":
+        # Not accept 0;
+        raise ValueError(f"Expected whole number not 0. Input: ({key})")
+    else:
+        key = int(key)
+
+    alpha_len = len(alphabet)
+    text_list = [char.lower() if char.isalpha() else char for char in text]
+    for index, char in enumerate(text_list, start=0):
+        # Replace characters only.
+        if not char.isspace() and char.isalpha():
+            shift = alphabet.index(char) + key
+
+            # Reduce iterations forward and backward.
+            if key > 0:
+                # Encryption.
+                while shift > alpha_len:
+                    shift -= alpha_len
+            else:
+                # Decryption.
+                while shift < 0:
+                    shift += alpha_len
+
+            text_list[index] = alphabet[shift]
+
+    ciphertxt = "".join(text_list)
+    print(ciphertxt)
+
+
+if __name__ == "__main__":
+    cyphering()
