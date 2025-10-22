@@ -1,47 +1,54 @@
-import os,time
+import os
+import time
+import pandas
 from art import auction_sign
 
-def clear():
+
+def screen_clear():
+    "Cleans terminal screen with 1 second delay."
     time.sleep(1)
     os.system("cls" if os.name == "nt" else "clear")
-    
-def silent_auction():
-    more_bidders = 1
-    bids = []
-    id = 0
-    while more_bidders == 1:
-        clear()
-        print(auction_sign)
-        id += 1
-        bid_entry = {}
-        
-        name = input("\nEnter name: \n> ").strip().split(" ")
-        for position in name:
-            if name[0] == position:
-                position = position.lower().capitalize()
-                formatted_name = ''.join(position)
-            else:
-                position = position.lower().capitalize()
-                formatted_name += " " + position
-                
-        bid_entry["name"] = formatted_name
-        bid_entry["bid"] = round(float(input("\nEnter bid: \n> ").replace("$", "")), 2)
-        bid_entry["id"] = id
-        bids.append(bid_entry)
-        
-        clear()
-        more_bidders = int(input("\nIs there another bidder? \nEnter 1 for \"YES\" \nEnter 0 for \"NO\" \n> ").strip())
-        if more_bidders == 1:
-            clear()
-    
-    winning_bid = 0
-    for bidder in bids:
-        if bidder["bid"] > winning_bid:
-            winners_name = bidder["name"]
-            winners_bid = bidder["bid"]
-            winning_bid = winners_bid
-            
-    print(f"\n{winners_name} won the aution with a bid of ${winners_bid:.2f}.\n")
-    
+
+
+def parse_input(message):
+    """Strip and lower case inputs."""
+    return input(message).strip().lower()
+
+
+def bid():
+    """
+    Prompt user for name and bid.
+    """
+    screen_clear()
+    name = parse_input("What's your name?: ")
+    bid = parse_input("What's your bid?: ")
+    more_bids = parse_input("Any more bidders?: ")
+    truthy = ["yes", "y", "1"]
+    if more_bids.lower() in truthy:
+        more_bids = True
+    else:
+        more_bids = False
+
+    return {"name": name.lower(), "bid": int(bid), "more_bids": more_bids}
+
+
+def auction():
+    print(auction_sign)
+    bidding = True
+    bids = {}
+    while bidding:
+        bid_notes = bid()
+        bids.update({bid_notes["name"]: bid_notes["bid"]})
+        bidding = bid_notes["more_bids"]
+
+    screen_clear()
+    winners = [(n.capitalize(), b) for n, b in bids.items() if b == max(bids.values())]
+    if len(winners) > 1:
+        win_table = pandas.DataFrame(winners, columns=["Name", "Bid"])
+        print("More than one winning:\n", win_table.to_string(index=False))
+    else:
+        print(f"CONGRATULATIONS: {winners[0][0]}\nBid:{winners[0][1]}")
+
+
 if __name__ == "__main__":
-    silent_auction()
+    auction()
