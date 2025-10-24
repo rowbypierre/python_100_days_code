@@ -1,102 +1,66 @@
-import os, math
 from art import logo
 
-def add(number1, number2):
-    """
-    Args:
-        number1 (integer): First of two integers to be added.
-        number2 (integer): Second of two integers to be added.
-
-    Returns:
-        integer: Summation of number1 and number2.
-    """
-    return number1 + number2
-
-def subtract(number1, number2):
-    """
-    Args:
-        number1 (integer): First of two integers to be subtracted.
-        number2 (integer): Second of two integers to be subtracted.
-
-    Returns:
-        integer: Result of number1 minus number2.
-    """
-    return number1 - number2
-
-def divide(number1, number2):
-    """
-    Args:
-        number1 (integer): First of two integers to be divided.
-        number2 (integer): Second of two integers to be divided.
-
-    Returns:
-        integer: Result of number1 divided number2.
-    """
-    return number1 / number2
-
-def multiply(number1, number2):
-    """
-    Args:
-        number1 (integer): First of two integers to be multiplied.
-        number2 (integer): Second of two integers to be multiplied.
-
-    Returns:
-        integer: Result of number1 multiplied number2.
-    """
-    return number1 * number2
-
-def power(number1, number2):
-    """
-    Args:
-        number1 (integer): Base number.
-        number2 (integer): Power which base number is raised.
-
-    Returns:
-        integer: Result of number1 raised to the power of number2.
-    """
-    return number1 ** number2
-
-operations = {
-    "+": add,
-    "-": subtract,
-    "*": multiply,
-    "/": divide,
-    "**": power,
-    "`": "square root"
-}
 
 def calculator():
-    os.system("cls" if os.name == "nt" else "clear")
-    print(logo)
+    """Execute calculations.
     
-    iteration = 1
-    while iteration > 0:
-        if iteration == 1:
-            number1 = float(input("\nEnter numeric value: \n> "))
-        else:
-            number1 = answer
-
-        print("\nOperators:")
-        for option in operations:
-            print(option)
-        option = input("\nEnter operator from above: \n> ")
-        if option == '`':
-            answer = math.sqrt(number1)
-            print(f"{number1} ** -2 = {answer}")
-        else:
-            number2 = float(input("\nEnter another numeric value: \n> "))
-
-            calculation_function = operations[option]
-            answer = calculation_function(number1, number2)
-            print(f"\n{number1} {option} {number2} = {answer}")
+    Prompts:
+        - n1 (float): Number or decimal.
+        - n2 (float): Number or decimal.
+        - op (str): Math operation.
+        - next op (str): Continue or start new calculation, or exit
+    
+    Returns:
+        None: Print result to terminal.
         
-        continuation = input("\nEnter 'y' to continue \nEnter 'z' to restart \nEnter 'n' to exit: \n> ")
-        if continuation ==  "y":
-            iteration += 1
-        elif continuation == "z":
-            calculator()
-        elif continuation == "n":
-            break
-        
+    Raises:
+        ValueError: Invalid prompt input."""
+    print(logo)
+
+    try:
+        use_result = False
+        operating = True
+        while operating:
+            if not use_result:
+                n1 = input("Enter value:\t").strip()
+                n2 = input("Enter value:\t").strip()
+            else:
+                n2 = input("Enter value:\t").strip()
+            try:
+                n1 = float(n1)
+                n2 = float(n2)
+            except ValueError():
+                print("One or both inputs not float type.")
+
+            ops = ["+", "-", "/", "*", "^"]
+            op = input(f"Enter {ops}:\t").strip()
+            op_str = f"{n1} {op.replace('^', '**')} {n2}"
+            if op in ops:
+                result = eval(op_str)
+                print(f"{op_str}: {result}")
+            else:
+                raise ValueError(
+                    f"Invalid operation input {op}. Operations include {ops}."
+                )
+
+            next_op = (
+                input("\ny - continue" + "\nn - new calculation" + "\nx - exit\n: ")
+                .strip()
+                .lower()
+            )
+            if next_op == "y":
+                n1 = result
+                use_result = True
+            elif next_op == "n":
+                use_result = False
+            elif next_op == "x":
+                break
+            else:
+                raise ValueError("Invalid input. Expecting y, n, or x.")
+
+    except Exception as error:
+        print(f"Error: {error}")
+
+
 if __name__ == "__main__":
     calculator()
