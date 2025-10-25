@@ -1,165 +1,95 @@
-import random 
-import os
-from art import logo, win_ascii, lose_ascii, draw_ascii 
+import random
+from art import logo, win_ascii, lose_ascii, draw_ascii
 
-def blackjack():
-    """ 
-    Blackjack game with player and computer randomly dealt two cards. 
-    Player is prompted for additonal card dealings and summary of current hand, 
-    computer hand, and current score.  
-    """
-    
-    os.system("cls" if os.name == "nt" else "clear")
+deck = [card for card in range(2, 12) for _ in (range(3) if card == 10 else range(1))]
 
-    play = input(f"{logo}Would you like to play? \n'y' for Yes. \n'n' for No. \n> ").lower().strip()
+DEALER_HIT_LIMIT = 17
+BLACKJACK = 21
 
-    while play == 'y':
-            
-        player_hand = []
-        computer_hand = []
-        
-        def deal_card(hand):
-            """
-            Summary: Append (1) card to exist hand (dealt cards).
-            
-            Args:
-                hand (list): Any assortment of integers representing cards.
 
-            Returns:
-                list: Current hand with addition of one randomly drawn card.
-            """
-            cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
-            hand.append(cards[random.randint(0, len(cards) - 1)])
-            return hand
-        
-        for _ in range(2):
-            player_hand = deal_card(player_hand)
-            computer_hand = deal_card(computer_hand) 
-        
-        def hand_score(hand):
-            """
-            Summary: Determine score of current hand (dealt hand).
+def deal_card():
+    """Return random card (int) from deck."""
+    return random.choice(seq=deck)
 
-            Args:
-                hand (list): Object storing current cards in form of integers.
 
-            Returns:
-                int: Integer value totaling summation of dealt cards.  
-            """
-            score = 0
-            for card in hand:
-                score += card 
-            return score
-                
-        player_score = hand_score(player_hand)
-        computer_score = hand_score(computer_hand)
-        
-        while player_score > 0:
-            
-            masked_prompt = f"\n  Your score = {player_score} \n  Your hand = {player_hand} \n  Computer score = {computer_hand[0]} \n  Computer hand = [{str(computer_hand[0])}{((len(computer_hand) - 1) * ', X')}]"
-            unmasked_prompt = f"\n  Your score = {player_score} \n  Your hand = {player_hand} \n  Computer score = {computer_score} \n  Computer hand = {computer_hand}"
-            print(masked_prompt)
-            
-            
-            def win_black():
-                """
-                Summary: Print 'BLACKJACK' and 'YOU WIN' logos. Prompt final scores, user and computer hand. 
-                """
-                print(logo, win_ascii)
-                print(unmasked_prompt)
-            
-            def user_lose():
-                """
-                Summary: Print 'YOU LOSE' logo. Prompt final scores, user and computer hand. 
-                """
+def deal_hand():
+    """Return hand (list) of two cards (int)."""
+    return [deal_card() for _ in range(2)]
+
+
+def dealer_needs_card(hand):
+    """Confirms (bool) if dealer is to be dealt."""
+    global DEALER_HIT_LIMIT
+    return sum(hand) < DEALER_HIT_LIMIT
+
+
+def blackjack(hand):
+    """Confirms (bool) if hand (list) has blackjack."""
+    return sum(hand) == BLACKJACK
+
+
+def bust(hand):
+    """Confirms (bool) if hand (list) > blackjack."""
+    return sum(hand) > BLACKJACK
+
+
+def print_hands(dealer_hand, your_hand):
+    """Dealer and player hand terminal print screen."""
+    print(f"\nDealer:\t\t{dealer_hand}")
+    print(f"Your hand:\t{your_hand}")
+
+
+def ace_convert(hand):
+    """Return hand (list) with ace cards (11) as as value 1 (int)."""
+    if bust(hand):
+        return [1 if card == 11 else card for card in hand]
+    else:
+        return hand
+
+
+def draw(hand1, hand2):
+    """Confirm (bool) twos hands (list) have same summation."""
+    return sum(hand1) == sum(hand2)
+
+
+dealer_hand = deal_hand()
+your_hand = deal_hand()
+playing = True
+
+try:
+    while playing:
+        print(logo)
+        dealer_maskhand = [x for x in dealer_hand[: len(dealer_hand) - 1]] + ["X"]
+        print_hands(dealer_maskhand, your_hand)
+
+        deal = input("h (Hit) | s (Stand): ").strip().lower()
+        if deal.isalpha() and deal in ["h", "s"]:
+            if deal == "h":
+                your_hand.append(deal_card())
+            if dealer_needs_card(dealer_hand):
+                dealer_hand.append(deal_card())
+
+            dealer_hand = ace_convert(dealer_hand)
+            your_hand = ace_convert(your_hand)
+
+            if (
+                blackjack(dealer_hand)
+                or bust(your_hand)
+                or (sum(your_hand) < sum(dealer_hand) and not bust(dealer_hand))
+            ):
                 print(lose_ascii)
-                print(unmasked_prompt)
-            
-            def user_win():
-                """
-                Summary: Print 'YOU WIN' logo. Prompt final scores, user and computer hand. 
-                """
-                print(win_ascii)
-                print(unmasked_prompt)
-            
-            def equal_hands():
-                """
-                Summary: Print 'DRAW' logo. Prompt final scores, user and computer hand. 
-                """
+                print_hands(dealer_hand, your_hand)
+                playing = False
+            elif draw(dealer_hand, your_hand):
                 print(draw_ascii)
-                print(unmasked_prompt)
-            
-            def determine_outcome(player_hand = player_hand, computer_hand = computer_hand, player_score = player_score, computer_score = computer_score):    
-                """
-                Determine if player has hit blackjack or bust.
-                """
-                if 11 in player_hand and 10 in player_hand and len(player_hand) == 2:
-                    win_black()
-                    return "break"
-                elif 11 in player_hand and 10 in player_hand and len(player_hand) == 2:
-                    lose_ascii
-                    return "break"
-                elif player_score > 21:
-                    if 11 in player_hand:
-                        player_hand[player_hand.index(11)] = 1
-                            
-                        player_score = hand_score(player_hand)
-                        if player_score > 21:
-                            user_lose()
-                            return "break"
-                        elif player_score == 21: 
-                            user_win()
-                            return "break"
-                    else:
-                        user_lose() 
-                        return "break"
-                elif computer_score > 21:
-                    if 11 in computer_hand:
-                        computer_hand[computer_hand.index(11)] = 1
-                            
-                        computer_score = hand_score(computer_hand)
-                        if computer_score > 21:            
-                            user_win()
-                            return "break"
-                        elif computer_score == 21:            
-                            user_lose()
-                            return "break"
-                        else:
-                            user_win()
-                            return "break"
-                else:
-                    return "continue"
-
-            if determine_outcome() == "break":
-                break
-            
-            deal = input("\nWould you like another card? \n'y' for Yes. \n'n' for No. \n> ").lower().strip()
-            
-            if deal == "y":
-                player_hand = deal_card(player_hand)
-                player_score = hand_score(player_hand)
-                if computer_score < 17:
-                    computer_hand = deal_card(computer_hand)
-                    computer_score = hand_score(computer_hand)
+                print_hands(dealer_hand, your_hand)
+                playing = False
             else:
-                if determine_outcome() == "break":
-                    break
-                elif player_score == computer_score:
-                    equal_hands()
-                    break
-                elif player_score == 21 or player_score > computer_score: 
-                    user_win()
-                    break
-                elif computer_score == 21 or player_score < computer_score: 
-                    user_lose()
-                    break
-                
-        play = input(f"\nWould you like to play again? \n'y' for Yes. \n'n' for No. \n> ").lower().strip()
-        
-if __name__ == "__main__":
-    blackjack()
-    
-    
-    
- 
+                print(win_ascii)
+                print_hands(dealer_hand, your_hand)
+                playing = False
+        else:
+            raise ValueError("Invalid Input. Not h or s.")
 
+except Exception as error:
+    print(error)
