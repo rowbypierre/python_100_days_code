@@ -1,58 +1,47 @@
-import random 
-import art 
-import os
+import random
+from art import number_ascii, win_acii, lose_ascii
 
-def guessing_number_game(): 
-    """
-    Guess randomly generated integer for limited attempts dependent on difficulty level selected.
-    """
-           
-    os.system("cls" if os.name == "nt" else "clear")
-    print(art.number_ascii)
+LEVELS = {"easy": 10, "hard": 5}
 
-    difficulty = input("Enter difficulty level: \n'rookie' \n'intermediate' \n'expert' \n> ").lower().strip()
-    if difficulty == 'rookie':
-        allowed_attempts = 10
-        span = {
-            "minimum" : 0,
-            "maximum" : 33
-        }
-    elif  difficulty == 'intermediate':
-        allowed_attempts = 8
-        span = {
-            "minimum" : 0,
-            "maximum" : 66
-        }
-    elif  difficulty == 'expert':
-        allowed_attempts = 6
-        span = {
-            "minimum" : 0,
-            "maximum" : 100
-        }   
+MAGIC_NUMBER = random.randint(1, 100)
 
 
-    game_play = True
-    player_guesses = 0
-    magic_number = random.randint(span["minimum"], span["maximum"])  
-    while game_play is True:
-        guess = int(input(f"\nYou have {allowed_attempts - player_guesses} remaining. \nGuess a number between {span['minimum']} and {span['maximum']}. \n> ").strip())
-        if guess > magic_number:
-            print("Too high.")
-        elif guess < magic_number:
-            print("Too low.")
-        elif guess == magic_number:
-            print(art.win_acii + "\n!!!YOU HAVE GUESSED CORRECTLY!!!")
-            game_play = False
-            
-        player_guesses += 1    
-        if allowed_attempts ==  player_guesses:
-            print(art.lose_ascii + "\n!!!YOU HAVE NO MORE ATTEMPTS!!!")
-            game_play = False
-
-if __name__ == "__main__":
-    guessing_number_game()
-    
-        
-    
+def correct_guess(guess):
+    """Confirm (bool) whether guess (str) is correct."""
+    return int(guess) == MAGIC_NUMBER
 
 
+def too_cold(guess):
+    """Confirm (bool) whether guess (str) is too low/cold."""
+    return int(guess) < MAGIC_NUMBER
+
+
+print(number_ascii + "\n!NUMBER RANGES FROM 1 TO 100!")
+
+try:
+    level = input("Choose diffculty. Type easy or hard: ").strip().lower()
+    if level not in LEVELS.keys():
+        raise ValueError(f"Input '{level}' is invalid. Expected 'easy' or 'hard'.")
+
+    max_try = LEVELS[level]
+    for round in range(1, max_try + 1):
+        print(f"ATTEMPT #: {round}")
+        # print(MAGIC_NUMBER) # Testing
+        guess = input("Make a guess: ").strip()
+        if not guess.isnumeric():
+            raise ValueError(f"Guess '{guess}' is invalid. Expected integer.")
+        else:
+            if not correct_guess(guess):
+                if round == max_try:
+                    print(lose_ascii + f"\n!MAGIC_NUMBER IS {MAGIC_NUMBER}!")
+                    break
+                elif too_cold(guess):
+                    print("TOO COLD")
+                elif not too_cold(guess):
+                    print("TOO_HOT")
+            if correct_guess(guess):
+                print(win_acii)
+                break
+
+except Exception as error:
+    print(error)
