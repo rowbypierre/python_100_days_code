@@ -57,12 +57,20 @@ def higher_lower():
         print(celebs)
         game_display(celebs, score)
 
-        try:
-            guess = input("Who has more followers? Type 'A' or 'B': ").strip().upper()
-            if guess not in valid_inputs:
-                raise ValueError(f"Guess {guess} is invalid. Expected: {valid_inputs}.")
-        except ValueError as ve:
-            print(ve)
+        typing = True
+        while typing:
+            try:
+                guess = (
+                    input("Who has more followers? Type 'A' or 'B': ").strip().upper()
+                )
+                if guess not in valid_inputs:
+                    raise ValueError(
+                        f"Guess {guess} is invalid. Expected: {valid_inputs}."
+                    )
+                else:
+                    typing = not typing
+            except Exception as error:
+                print(error)
 
         if guess_correct(*celebs, guess):
             score += 1

@@ -1,5 +1,0 @@
-# Scrap notes
-learning.py
-
-# VS settings
-.vscode/

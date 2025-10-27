@@ -82,26 +82,32 @@ def make_pass():
     Raises:
         ValueError: Prompted inputs not contain integer.
     """
-    try:
-        clear_screen()
-        print("\nWelcome to the Password Generator!\n")
+    clear_screen()
+    print("\nWelcome to the Password Generator!\n")
 
-        new_pass = list()
-        for char in char_types:
-            count = input(f"\nEnter desired number of {char}:\t").strip()
-            if isinstance(count, int):
-                raise ValueError(f"Input ({count} is invalid. Whole integer required.)")
-            else:
-                new_pass += random.choices(char_types[char], k=int(count))
+    new_pass = list()
+    for char in char_types:
+        get_qty = True
+        while get_qty:
+            try:
+                count = input(f"\nEnter desired number of {char}:\t").strip()
+                ve_flag = f"Input {count} is invalid. Whole integer required."
+                if not count.isdigit():
+                    raise ValueError(ve_flag)
+                elif int(count) < 0:
+                    raise ValueError(ve_flag)
+                else:
+                    get_qty = not get_qty
+            except Exception as error:
+                print(f"Error: {error}")
 
-        random.shuffle(new_pass)
-        pass_str = "".join(new_pass)
+        new_pass += random.choices(char_types[char], k=int(count))
 
-        clear_screen()
-        print(f"New password: {pass_str}")
+    random.shuffle(new_pass)
+    pass_str = "".join(new_pass)
 
-    except Exception as error:
-        print(f"Error: {error}")
+    clear_screen()
+    print(f"New password: {pass_str}")
 
 
 if __name__ == "__main__":

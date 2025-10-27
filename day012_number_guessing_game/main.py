@@ -18,30 +18,40 @@ def too_cold(guess):
 
 print(number_ascii + "\n!NUMBER RANGES FROM 1 TO 100!")
 
-try:
-    level = input("Choose diffculty. Type easy or hard: ").strip().lower()
-    if level not in LEVELS.keys():
-        raise ValueError(f"Input '{level}' is invalid. Expected 'easy' or 'hard'.")
-
-    max_try = LEVELS[level]
-    for round in range(1, max_try + 1):
-        print(f"ATTEMPT #: {round}")
-        # print(MAGIC_NUMBER) # Testing
-        guess = input("Make a guess: ").strip()
-        if not guess.isnumeric():
-            raise ValueError(f"Guess '{guess}' is invalid. Expected integer.")
+get_level = True
+while get_level:
+    try:
+        level = input("Choose diffculty. Type easy or hard: ").strip().lower()
+        if level not in LEVELS.keys():
+            raise ValueError(f"Input '{level}' is invalid. Expected 'easy' or 'hard'.")
         else:
-            if not correct_guess(guess):
-                if round == max_try:
-                    print(lose_ascii + f"\n!MAGIC_NUMBER IS {MAGIC_NUMBER}!")
-                    break
-                elif too_cold(guess):
-                    print("TOO COLD")
-                elif not too_cold(guess):
-                    print("TOO_HOT")
-            if correct_guess(guess):
-                print(win_acii)
-                break
+            get_level = not get_level
+    except Exception as error:
+        print(error)
 
-except Exception as error:
-    print(error)
+max_try = LEVELS[level]
+for round in range(1, max_try + 1):
+    print(f"ATTEMPT #: {round}")
+    # print(MAGIC_NUMBER) # Testing
+    get_guess = True
+    while get_guess:
+        try:
+            guess = input("Make a guess: ").strip()
+            if not guess.isnumeric():
+                raise ValueError(f"Guess '{guess}' is invalid. Expected integer.")
+            else:
+                get_guess = not get_guess
+        except Exception as error:
+            print(f"Error:{error}")
+
+    if not correct_guess(guess):
+        if round == max_try:
+            print(lose_ascii + f"\n!MAGIC_NUMBER IS {MAGIC_NUMBER}!")
+            break
+        elif too_cold(guess):
+            print("TOO COLD")
+        elif not too_cold(guess):
+            print("TOO_HOT")
+    if correct_guess(guess):
+        print(win_acii)
+        break

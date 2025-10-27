@@ -45,13 +45,21 @@ def cyphering():
         - ValueError: Prompt key (int) not integer.
     """
     print(logo)
-    text = input("Enter text to encrypt (str): ").strip().lower()
-    key = input("Enter cypher key (int): ").strip()
-    if not key.isdigit() and key == "0":
-        # Not accept 0;
-        raise ValueError(f"Expected whole number not 0. Input: ({key})")
-    else:
-        key = int(key)
+
+    get_text = True
+    while get_text:
+        try:
+            text = input("Enter text to encrypt (str): ").strip().lower()
+            key = input("Enter cypher key (int): ").strip()
+            if not key.isdigit() and key == "0":
+                raise ValueError(f"Expected whole number not 0. Input: ({key})")
+            elif text.isspace() or not text:
+                raise ValueError("Text must include characters.")
+            else:
+                get_text = not get_text
+                key = int(key)
+        except Exception as error:
+            print(f"Error: {error}")
 
     alpha_len = len(alphabet)
     text_list = [char.lower() if char.isalpha() else char for char in text]

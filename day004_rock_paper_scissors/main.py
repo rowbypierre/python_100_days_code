@@ -55,55 +55,51 @@ scissors = """
 ---.__(___)
 """
 
-options = {1: rock, 2: paper, 3: scissors}
-options_list = [opt for opt in options.keys()]
+arsenal = {1: rock, 2: paper, 3: scissors}
+arsenal_key_str = [str(opt) for opt in arsenal.keys()]
 
 prompts = {
     "welcome": "Rock, paper, scissors VS the Computer.",
     "choices": ["Enter 1 for rock.", "\nEnter 2 for paper.", "\nEnter 3 for scissors."],
 }
 
-not_raise_ve = True
 game_on = True
 while game_on:
-    clear_print(prompts["welcome"], delay=2)
-    clear_print(prompts["choices"], delay=2)
+    clear_print(prompts["welcome"], delay=1)
+    clear_print(prompts["choices"], delay=1)
 
-    try:
-        user_choice = input("\nEnter choice: ").strip()
-        not_raise_ve = user_choice.isdigit()
-
-        if not_raise_ve:
-            not_raise_ve = int(user_choice) in options_list
-            if not_raise_ve:
-                user_choice = options[int(user_choice)]
-                computer_choice = options[random.randint(1, 3)]
-
-                print(
-                    f"\nYour choice: {user_choice} \nComputer's choice: {computer_choice}"
+    get_input = True
+    while get_input:
+        try:
+            user_weapon = input("\nEnter choice: ").strip()
+            if user_weapon not in arsenal_key_str:
+                raise ValueError(
+                    f"Invalid input: {user_weapon}\nValid inputs include: {arsenal_key_str}"
                 )
+            else:
+                get_input = False
+        except Exception as error:
+            print("Error: " + str(error))
+            pause(1)
 
-                if (
-                    computer_choice == rock
-                    and user_choice == scissors
-                    or computer_choice == scissors
-                    and user_choice == paper
-                    or computer_choice == paper
-                    and user_choice == rock
-                ):
-                    print("\nXXXTHE COMPUTER WINSXXX")
-                    game_on = False
-                elif computer_choice == user_choice:
-                    print("\nWE HAVE A TIE. Try again.")
-                else:
-                    print("\n!!!YOU WIN!!!")
-                    game_on = False
+    user_weapon = arsenal[int(user_weapon)]
+    computer_weapon = arsenal[random.randint(1, 3)]
 
-        if not not_raise_ve:
-            game_on = False
-            raise ValueError(
-                f"Invalid input: {user_choice}\nValid inputs include: {options_list}"
-            )
+    print(f"\nYour choice: {user_weapon} \nComputer's choice: {computer_weapon}")
 
-    except Exception as error:
-        print("Error: " + str(error))
+    if (
+        computer_weapon == rock
+        and user_weapon == scissors
+        or computer_weapon == scissors
+        and user_weapon == paper
+        or computer_weapon == paper
+        and user_weapon == rock
+    ):
+        print("\nXXXTHE COMPUTER WINSXXX")
+        game_on = False
+    elif computer_weapon == user_weapon:
+        print("\nWE HAVE A TIE. Try again.")
+    else:
+        print("\n!!!YOU WIN!!!")
+
+    pause(1)

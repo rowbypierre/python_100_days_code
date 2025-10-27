@@ -20,9 +20,27 @@ def bid():
     Prompt user for name and bid.
     """
     screen_clear()
-    name = parse_input("What's your name?: ")
-    bid = parse_input("What's your bid?: ")
-    more_bids = parse_input("Any more bidders?: ")
+    get_info = True
+    while get_info:
+        try:
+            name = parse_input("What's your name?: ")
+            bid = parse_input("What's your bid?: ")
+            more_bids = parse_input("Any more bidders (yes or no)?: ")
+            if (
+                name.isspace()
+                or bid.isspace()
+                or more_bids.isspace()
+                or not bid.isnumeric()
+            ):
+                raise ValueError(
+                    "Field must contain characters. Bids must be value > 0."
+                )
+            else:
+                get_info = not get_info
+
+        except Exception as error:
+            print(f"Error:{error}")
+
     truthy = ["yes", "y", "1"]
     if more_bids.lower() in truthy:
         more_bids = True

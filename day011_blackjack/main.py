@@ -55,41 +55,44 @@ def draw(hand1, hand2):
 dealer_hand = deal_hand()
 your_hand = deal_hand()
 playing = True
+while playing:
+    print(logo)
+    dealer_maskhand = [x for x in dealer_hand[: len(dealer_hand) - 1]] + ["X"]
+    print_hands(dealer_maskhand, your_hand)
 
-try:
-    while playing:
-        print(logo)
-        dealer_maskhand = [x for x in dealer_hand[: len(dealer_hand) - 1]] + ["X"]
-        print_hands(dealer_maskhand, your_hand)
-
-        deal = input("h (Hit) | s (Stand): ").strip().lower()
-        if deal.isalpha() and deal in ["h", "s"]:
-            if deal == "h":
-                your_hand.append(deal_card())
-            if dealer_needs_card(dealer_hand):
-                dealer_hand.append(deal_card())
-
-            dealer_hand = ace_convert(dealer_hand)
-            your_hand = ace_convert(your_hand)
-
-            if (
-                blackjack(dealer_hand)
-                or bust(your_hand)
-                or (sum(your_hand) < sum(dealer_hand) and not bust(dealer_hand))
-            ):
-                print(lose_ascii)
-                print_hands(dealer_hand, your_hand)
-                playing = False
-            elif draw(dealer_hand, your_hand):
-                print(draw_ascii)
-                print_hands(dealer_hand, your_hand)
-                playing = False
+    get_input = True
+    while get_input:
+        try:
+            deal = input("h (Hit) | s (Stand): ").strip().lower()
+            if deal not in ["h", "s"]:
+                raise ValueError(f"'{deal}' is not 'h' or 's'.")
             else:
-                print(win_ascii)
-                print_hands(dealer_hand, your_hand)
-                playing = False
-        else:
-            raise ValueError("Invalid Input. Not h or s.")
+                get_input = not get_input
+        except Exception as error:
+            print(f"Error: {error}")
 
-except Exception as error:
-    print(error)
+    if deal.isalpha() and deal in ["h", "s"]:
+        if deal == "h":
+            your_hand.append(deal_card())
+        if dealer_needs_card(dealer_hand):
+            dealer_hand.append(deal_card())
+
+        dealer_hand = ace_convert(dealer_hand)
+        your_hand = ace_convert(your_hand)
+
+        if (
+            blackjack(dealer_hand)
+            or bust(your_hand)
+            or (sum(your_hand) < sum(dealer_hand) and not bust(dealer_hand))
+        ):
+            print(lose_ascii)
+            print_hands(dealer_hand, your_hand)
+            playing = False
+        elif draw(dealer_hand, your_hand):
+            print(draw_ascii)
+            print_hands(dealer_hand, your_hand)
+            playing = False
+        else:
+            print(win_ascii)
+            print_hands(dealer_hand, your_hand)
+            playing = False

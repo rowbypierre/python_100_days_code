@@ -82,40 +82,50 @@ def billSplit():
         bill amount, tip percentage, or total # of diners.
     """
     clear()  # clear terminal (unix or windows)
-    try:
-        # Get system Username
-        user = os_cmmd(
-            win_cmmd="whoami", unix_cmmd="whoami", type="read"
-        )
-        # Welcome, get bill total  
-        bill = (
-            input(f"""Welcome {user.upper()}
-                  \nBill total ($):\t""")
-            .replace("$", "")
-            .strip()
-        )  
-        if not is_float(bill) or float(bill) < 1:  # Check bill amount
-            raise ValueError("Bill amount invalid, enter numeric value > 1.")
+    # Get system Username
+    user = os_cmmd(win_cmmd="whoami", unix_cmmd="whoami", type="read")
 
-        clear()
-        tip_rates = [num for num in range(0, 51, 10)]
-        print(f"Common tip rates (%): {tip_rates}")
-        tip_pct = input("\nTip rate (%):\t")  # Get tip rate
-        if not is_float(tip_pct) or float(tip_pct) < 0:  # Check tip rate
-            raise ValueError("Tip rate invalid, enter numeric value > 0.")
+    get_values = True
+    while get_values:
+        try:
+            # Welcome, get bill total
+            bill_total = (
+                input(f"""\nWelcome {user.upper()} \nBill total ($):\t""")
+                .replace("$", "")
+                .strip()
+            )
+            if not is_float(bill_total):  # Check bill amount
+                raise ValueError("Bill amount invalid, enter numeric value > 1.")
 
-        diners = input("\nNumber of diners:\t").strip()  # Get head count
-        if not diners.isdigit() or float(diners) < 0:  # Check head count input
-            raise ValueError("Number of guest invalid, enter whole number > 0.")
+            clear()
+            tip_rates = [num for num in range(0, 51, 10)]
+            print(f"Common tip rates (%): {tip_rates}")
+            tip_percent = input("\nTip rate (%):\t")  # Get tip rate
+            ve_message = "Tip rate invalid, enter numeric value > 0."
+            if not is_float(tip_percent):  # Check tip rate
+                raise ValueError(ve_message)
+            elif float(tip_percent) < 0:
+                raise ValueError(ve_message)
 
-        split = round((float(bill) * (1 + float(tip_pct) / 100)) / int(diners), 2)
-        split = "{:.2f}".format(split)
+            diners = input("\nNumber of diners:\t").strip()  # Get head count
+            ve_message = "Number of guest invalid, enter whole number > 0."
+            if not diners.isdigit():  # Check head count input
+                raise ValueError(ve_message)
+            elif float(diners) < 0:
+                raise ValueError(ve_message)
+            else:
+                get_values = not get_values
 
-        clear()
-        print(f"\nDiner splits: ${split}")  # Print split per diner
+        except Exception as error:
+            print(f"Error: {error}")
 
-    except Exception as error:
-        print(f"Error: {error}")
+    diner_split = round(
+        (float(bill_total) * (1 + float(tip_percent) / 100)) / int(diners), 2
+    )
+    diner_split = "{:.2f}".format(diner_split)
+
+    clear()
+    print(f"\nDiner splits: ${diner_split}")  # Print split per diner
 
 
 if __name__ == "__main__":

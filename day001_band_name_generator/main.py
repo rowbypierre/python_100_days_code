@@ -59,35 +59,39 @@ def band_name_gen():
     Raises:
         ValueError: If inputs contain non-alphabetic characters.
     """
-    try:
-        clear()
-        user = os_cmmd(win_cmmd="whoami", unix_cmmd="whoami", type="read").upper()
-        city = input(f"""\n!!!!!!!!!!!!Band Name Generator!!!!!!!!!!!! 
-                    \nWelcome {user} 
-                    \nWhat's the name of the city you up in? \n""").strip()
-        pet = input("\nEnter a great pet name? \n").strip()
+    clear()
+    user = os_cmmd(win_cmmd="whoami", unix_cmmd="whoami", type="read").upper()
 
-        if not (city.isalpha() & pet.isalpha()):
-            raise TypeError("string characters must be alphabetic")
+    get_info = True
+    while get_info:
+        try:
+            city = input(f"""\n!!!!!!!!!!!!Band Name Generator!!!!!!!!!!!! 
+                        \nWelcome {user} 
+                        \nWhat's the name of the city you up in? \n""").strip()
+            pet = input("\nEnter a great pet name? \n").strip()
+            if not (city.isalpha() & pet.isalpha()):
+                raise TypeError("String characters must be A-Z, a-z.")
+            else:
+                get_info = not get_info
 
-        band_patterns = [
-            "The {} Beats of {}",
-            "The {} {} Chorus",
-            "Velvet {} of {}",
-            "Midnight {} in {}",
-            "{} {} Rhapsody",
-            "Echoing {} of {}",
-            "{} {} Ensemble",
-            "Groovy {} of {}",
-            "Sonic {} Serenade in {}",
-        ]
+        except Exception as error:
+            print(f"Error: {error}")
 
-        clear()
-        for pattern in band_patterns:
-            print(pattern.format(pet.capitalize(), city.capitalize()))
+    band_patterns = [
+        "The {} Beats of {}",
+        "The {} {} Chorus",
+        "Velvet {} of {}",
+        "Midnight {} in {}",
+        "{} {} Rhapsody",
+        "Echoing {} of {}",
+        "{} {} Ensemble",
+        "Groovy {} of {}",
+        "Sonic {} Serenade in {}",
+    ]
 
-    except Exception as error:
-        print(f"Error: {error}")
+    clear()
+    for pattern in band_patterns:
+        print(pattern.format(pet.capitalize(), city.capitalize()))
 
 
 if __name__ == "__main__":
