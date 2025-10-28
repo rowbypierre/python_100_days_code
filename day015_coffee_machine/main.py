@@ -113,13 +113,16 @@ while powered_on:
             if patron_payment > drink_cost:
                 print(f"Here is {get_change(beverage, patron_payment)} in change.")
             print(f"!!!HERE IS YOUR {beverage.upper()}. ENJOY!!!")
+
+            more_orders = prompt_user(
+                "\nWould you like to place another order? (y|n): ", ["y", "n"]
+            )
+            if more_orders == "n":
+                powered_on = not powered_on
         elif patron_payment < drink_cost:
             print("!!!INSUFFICIENT FUNDS!!!")
+        
     else:
         print("!!!LOW ON SUPPLIES!!!")
 
-    more_orders = prompt_user(
-        "\nWould you like to place another order? (y|n): ", ["y", "n"]
-    )
-    if more_orders == "n":
-        powered_on = not powered_on
+    
