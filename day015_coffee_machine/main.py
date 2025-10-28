@@ -1,7 +1,5 @@
-import locale
-import sys
+import os
 
-# TODO: Create menu with 3 hot flavors, and ingredients.
 MENU = {
     "espresso": {
         "ingredients": {
@@ -25,7 +23,7 @@ MENU = {
             "coffee": 24,
         },
         "cost": 3.0,
-    }
+    },
 }
 
 resources = {
@@ -35,139 +33,93 @@ resources = {
 }
 
 
-# TODO: Prompt menu (brew drink) or report (summary of consumables).
-functions = {
-    "1": {
-        "component": MENU,
-        "alias": "Menu"
-    },
-    "2": {
-        "component": resources,
-        "alias": "Report"
-    },
-    "3": {
-        "component": "sys.exit()",
-        "alias": "Exit"
-    }
-}
+def has_supplies(drink):
+    """Confirm (bool) enough resources to make drink (str)."""
+    supplies_ok = True
+    for item, qty in MENU[drink]["ingredients"].items():
+        if qty > resources[item]:
+            supplies_ok = False
+
+    return supplies_ok
 
 
-def shutdown_machine():
-    exec(functions["3"]["component"])
+def make_drink(drink):
+    """Digitally consume resources."""
+    for item, qty in MENU[drink]["ingredients"].items():
+        resources[item] -= qty
 
 
-profit = 0
-coffee_machine_running = True
+def clear_termnial():
+    """Clear terminal screen of Windows and UNIX-like system."""
+    os.system("cls" if os.name == "nt" else "clear")
 
-while coffee_machine_running:
-    counter = 0
-    for operation in functions:
-        counter += 1
-        print(f"Enter {counter} |\t\t{functions[operation]["alias"]}")
 
-    function_selection = input("> ")
-    if function_selection == "1":
-        # TODO: Prompt coffee options, user input selecting one drink.
-        print("\nSelect drink below:")
-        counter = 0
-        for item in MENU:
-            counter += 1
-            MENU[item]["line_number"] = counter
-            print(f"Enter '{MENU[item]["line_number"]}' |\t\t{item.capitalize()}")
+def prompt_user(prompt, valid_input_list):
+    """Prompt user input and return valid input."""
+    prompting = True
+    while prompting:
+        try:
+            user_input = input(prompt).strip().lower()
+            if user_input not in valid_input_list:
+                raise ValueError(
+                    f"'{user_input}' Invalid. Expected: {valid_input_list}"
+                )
+            else:
+                prompting = not prompting
+                return user_input
+        except Exception as error:
+            print(f"Error: {error}")
 
-        user_selection = int(input("> ").strip())
-        for item in MENU:
-            if MENU[item]["line_number"] == user_selection:
-                user_selection = item
 
-        # TODO: Confirm enough resources exist to brew drink.
-        return_to_menu = False
-        for resource in MENU[user_selection]["ingredients"]:
-            if resources[resource] < MENU[user_selection]["ingredients"][resource]:
-                print("\nMachine is low on ingredients needed to make this drink.")
-                return_to_menu = True
-                break
+def get_payment(drink):
+    """Take in patron currency and return total (float)."""
+    valid_money = {"quarters": 0.25, "dimes": 0.1, "nickles": 0.05, "pennies": 0.01}
 
-        if return_to_menu is not True:
-            for ingredient in resources:
-                if ingredient not in list(MENU[user_selection]["ingredients"].keys()):
-                    MENU[user_selection]["ingredients"][ingredient] = 0
-                resources[ingredient] -= MENU[user_selection]["ingredients"][ingredient]
-                # print(str(ingredient) + ":\t" + str(resources[ingredient]))
+    payment = []
+    for money in valid_money:
+        deposit = prompt_user(
+            f"How many {money}?:\t", [str(number) for number in range(0, 101)]
+        )
+        payment.append(float(deposit) * valid_money[money])
 
-            # TODO: Confirm drink selection, print drink price. Finally prompt/input user digital currency.
-            locale.setlocale(locale.LC_ALL, '')
+    return sum(payment)
 
-            def convert_int_to_usd(amount):
-                """
-                Returns parameter 'amount' (numeric value) as U.S. dollar currency.
-                """
-                local_value = locale.currency(amount, symbol=True, grouping=True)
-                return local_value
 
-            print(f"\n{user_selection.capitalize()} cost {convert_int_to_usd(MENU[user_selection]["cost"])}.")
+def get_change(drink, payment):
+    """Return difference (float) of payment (float) and drink (str) cost (float)."""
+    return payment - MENU[drink]["cost"]
 
-            accepted_coins = {
-                "Penny": {
-                    "conversion_rate": .01
-                },
-                "Nickel": {
-                    "conversion_rate": .05
-                },
-                "Dime": {
-                    "conversion_rate": .10
-                },
-                "Quarter": {
-                    "conversion_rate": .25
-                }
-            }
 
-            print("\nEnter coins:")
-            deposit = 0
-            continue_depositing = True
-            while continue_depositing:
-                for coin in accepted_coins:
-                    coin_deposit_count = int(input(f"{coin}(s) deposited: ").strip())
-                    deposit += coin_deposit_count * accepted_coins[coin]["conversion_rate"]
-                    print("Deposit total: " + convert_int_to_usd(deposit))
+powered_on = True
+while powered_on:
+    clear_termnial()
 
-                    if deposit >= MENU[user_selection]["cost"]:
-                        print(f"\nNo additional deposits required.")
-                        continue_depositing = False
+    menu_items = list(MENU.keys())
+    beverage = prompt_user(
+        f"\n{menu_items}" + "\nWhich would you like?: ",
+        [items for items in menu_items] + ["report"],
+    )
 
-                        # TODO: Calculate customer change, profits, and resources after transaction.
-                        if deposit > MENU[user_selection]["cost"]:
-                            customer_change = deposit - MENU[user_selection]["cost"]
-                            profit = deposit - customer_change
-                            print("Change returned to customer:\t" + convert_int_to_usd(customer_change))
-                        else:
-                            profit += MENU[user_selection]["cost"]
+    if beverage == "report":
+        for res, qty in resources.items():
+            print(f"{res}\t{qty}")
+    elif has_supplies(beverage):
+        patron_payment = get_payment(beverage)
+        drink_cost = MENU[beverage]["cost"]
 
-                        print("\nBrewing...")
-                        # print("profit:\t" + str(convert_int_to_usd(profit)))
-                        break
-                    elif deposit < MENU[user_selection]["cost"]:
-                        print(f"Deposit {convert_int_to_usd(MENU[user_selection]["cost"] - deposit)} for drink.\n")
+        if patron_payment >= drink_cost:
+            make_drink(beverage)
 
-                current_deposit_return = int(input(f"\nWould you like deposited: "
-                                                   f"{convert_int_to_usd(deposit)} returned?"
-                                                   f"\nEnter 1 |\t'Yes' \nEnter 2 |\t'No'\n> "))
-                if current_deposit_return == 1:
-                    print(f"\n{convert_int_to_usd(deposit)} returned...")
-                    continue_depositing = False
-                    shutdown_machine()
-
-    # TODO: Print ingredient inventory.
-    elif function_selection == "2":
-        print("")
-
-        for ingredient in resources:
-            print(ingredient.capitalize() + ":\t" + str(resources[ingredient]))
-    # TODO: Provide option to exit program.
-    elif function_selection == "3":
-        shutdown_machine()
-
-    if int(input("\nPerform another operation? \nEnter 1 |\t'Yes' \nEnter 2 |\t'No'\n> ").strip()) != 1:
-        shutdown_machine()
+            if patron_payment > drink_cost:
+                print(f"Here is {get_change(beverage, patron_payment)} in change.")
+            print(f"!!!HERE IS YOUR {beverage.upper()}. ENJOY!!!")
+        elif patron_payment < drink_cost:
+            print("!!!INSUFFICIENT FUNDS!!!")
     else:
-        print("")
+        print("!!!LOW ON SUPPLIES!!!")
+
+    more_orders = prompt_user(
+        "\nWould you like to place another order? (y|n): ", ["y", "n"]
+    )
+    if more_orders == "n":
+        powered_on = not powered_on
