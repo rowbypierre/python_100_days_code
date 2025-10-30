@@ -1,17 +1,23 @@
+import random
+
+
 class Quiz:
-
-    def __init__(self, questions_list):
+    def __init__(self, question_list):
         self.question_number = 0
-        self.questions_list = questions_list
+        self.question_list = question_list
         self.correct_answers = 0
+        self.quiz_length = len(self.question_list)
 
-    def more_questions_remain(self):
-        return self.question_number < len(self.questions_list)
+    def questions_remain(self):
+        return self.question_number < self.quiz_length
 
     def next_question(self):
-        current_question = self.questions_list[self.question_number]
+        random.shuffle(self.question_list)
+        current_question = self.question_list[self.question_number]
         self.question_number += 1
-        user_answer = input(f"Q.{self.question_number}: {current_question.question} (True/False)?\n> ")
+        user_answer = input(
+            f"Q.{self.question_number}: {current_question.question} (True/False)?\n> "
+        )
         self.answer_check(user_answer, current_question.answer)
 
     def answer_check(self, user_answer, correct_answer):
@@ -22,11 +28,15 @@ class Quiz:
         else:
             print("!!!Incorrect!!!")
 
-        print(f"Answer:\t\t{correct_answer.capitalize()}"
-              f"\nCorrect:\t{self.correct_answers}\\{self.question_number}"
-              f"\n")
+        print(
+            f"Answer:\t\t\t{correct_answer.capitalize()}"
+            f"\nCorrect Answers:\t{self.correct_answers}"
+            f"\nQuestions Answered:\t{self.question_number}\n"
+        )
 
     def is_quiz_complete(self):
-        if self.question_number == len(self.questions_list):
-            print("Quiz completed."
-                  f"\nFinal score:\t{self.correct_answers}\\{self.question_number}")
+        if self.question_number == len(self.question_list):
+            print(
+                "Quiz completed."
+                f"\nFinal score:\t{self.correct_answers}\\{self.quiz_length}"
+            )
