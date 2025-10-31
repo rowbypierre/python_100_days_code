@@ -1,58 +1,68 @@
-import turtle as tt
-import random as rm
+import turtle as T
+import random as R
 
-screen = tt.Screen()
-width = 800
-height = 800
-screen.setup(width=width, height=height)
-colors = ["red", "pink", "green", "yellow", "blue", "purple"]
-rm.shuffle(colors)
-user_choice = screen.textinput(title=f"PICK A WINNER", prompt=f"Which turtle win {tuple(colors)}?")
-# print(user_choice)
+screen = T.Screen()
+screen.setup(800, 800)
+turtle_colors = ["red", "pink", "green", "yellow", "blue", "purple"]
+R.shuffle(turtle_colors)
 
-turtles = []
-gap = height / len(colors)
-start_pos_x = - 1 * (height / 2) + gap / 2
-start_pos_y = - 1 * (height / 2) + gap / 1.8
+get_pick = True
+try:
+    while get_pick:
+        user_choice = (
+            screen.textinput(
+                title="PICK A WINNER", prompt=f"Which turtle wins: {turtle_colors}?"
+            )
+            .strip()
+            .lower()
+        )
 
-for turtle in range(1, 7):
-    count = turtle
-    if count > 1:
-        start_pos_y += gap
+        if user_choice in turtle_colors:
+            get_pick = not get_pick
+        else:
+            raise ValueError(f"'{user_choice}' not in {turtle_colors}")
+except Exception as error:
+    print(f"Error: {error}")
 
-    color = colors[count - 1]
+start_positions = [
+    (int(screen.window_width() / -2 + 100), y)
+    for y in range(
+        int(screen.window_height() / -2 + 60),
+        int(screen.window_height() / 2),
+        int(screen.window_height() / len(turtle_colors)),
+    )
+]
 
-    turtle = tt.Turtle(shape="turtle")
-    turtle.color(color)
-    turtle.shapesize(2)
-    turtle.penup()
-    turtle.goto(x=start_pos_x, y=start_pos_y)
+racing_turtles = []
+for pos in start_positions[: len(turtle_colors)]:
+    new_turtle = T.Turtle(shape="turtle")
+    new_turtle.color(turtle_colors[start_positions.index(pos)])
+    new_turtle.shapesize(2)
+    new_turtle.penup()
+    new_turtle.goto(*pos)
+    racing_turtles.append(new_turtle)
 
-    turtles.append({
-        "object_id": turtle,
-        "color": color
-    })
-
-drawing_turtle = tt.Turtle(shape="turtle")
+start_line_begin = (-260, -400)
+drawing_turtle = T.Turtle(shape="turtle")
 drawing_turtle.showturtle()
 drawing_turtle.setheading(90)
-start_line_begin = (start_pos_x + (gap / 2), start_pos_x - (gap / 4))
-drawing_turtle.teleport(x=start_line_begin[0], y=start_line_begin[1])
+drawing_turtle.teleport(*start_line_begin)
 drawing_turtle.pendown()
-drawing_turtle.forward(start_line_begin[1] * -2 - (gap / 100))
+drawing_turtle.forward(screen.window_height())
+drawing_turtle.setheading(270)
 
 racing = True
 while racing:
-    for turtle in turtles:
-        turtle["object_id"].forward(rm.randint(0, 30))
-        # print(turtle)
-        if turtle["object_id"].xcor() >= (width / 2 - gap / 4):
-            winner = turtle["color"].upper()
-            if winner.lower() == user_choice.lower():
-                screen.title(titlestring=f"GOOD PICK: !!!{winner} WON!!!")
-            else:
-                screen.title(titlestring=f"WRONG PICK: !!!{winner} WON!!!")
-            racing = False
-            break
+    for turtle in racing_turtles:
+        turtle.forward(R.randint(0, 30))
 
-tt.exitonclick()
+        if turtle.xcor() >= (screen.window_width() / 2):
+            win_color = turtle.fillcolor()
+            if win_color.lower() == user_choice.lower():
+                screen.title(titlestring=f"GOOD PICK: !!!{win_color.upper()} WON!!!")
+            else:
+                screen.title(titlestring=f"WRONG PICK: !!!{win_color.upper()} WON!!!")
+
+            racing = False
+
+screen.exitonclick()
