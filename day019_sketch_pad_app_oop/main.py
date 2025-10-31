@@ -1,20 +1,15 @@
-import turtle as tt
+import turtle as T
 
-screen = tt.Screen()
+screen = T.Screen()
 screen.setup(height=500, width=500)
 screen.title(titlestring="!!!USE KEYBOARD AND DRAW ON SKETCH PAD!!!")
 
-turtle = tt.Turtle()
-turtle.shape("classic")
+turtle = T.Turtle(shape="classic")
 turtle.speed("fastest")
-
-angle = turtle.heading()
 
 
 def angle_adjust(adjustment):
-    global angle
-    turtle.setheading(angle + adjustment)
-    angle = turtle.heading()
+    turtle.setheading(turtle.heading() + adjustment)
 
 
 def move_front():
@@ -61,4 +56,4 @@ screen.onkeypress(fun=reset_canvas, key="z")
 screen.onkeypress(fun=close_canvas, key="space")
 
 screen.listen()
-tt.mainloop()
+screen.mainloop()
