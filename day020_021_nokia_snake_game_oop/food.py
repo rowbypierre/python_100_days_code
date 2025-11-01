@@ -1,10 +1,9 @@
 from turtle import Turtle
-import random as r
+import random as R
 
 
 class Food(Turtle):
-
-    def __init__(self, high_limit, low_limit):
+    def __init__(self, max_radian, min_radian):
         super().__init__()
         """
         Initialize Food class with inherited properties from Turtle class.
@@ -14,18 +13,18 @@ class Food(Turtle):
         self.shapesize(stretch_len=0.5, stretch_wid=0.5)
         self.color("blue")
         self.speed("fastest")
-        self.move_food(high_limit=high_limit, low_limit=low_limit)
+        self.move_food(max_radian, min_radian)
 
-    def move_food(self, high_limit, low_limit):
+    def move_food(self, max_radian, min_radian):
         """
-        Move food object to random coordinate within specified parameters.
+        Move food object to random location within specified parameters.
 
         Parameters:
-            high_limit: Greatest positive radian.
-            low_limit: The Least negative radian.
+            max_radian: Upper bound of grid, y value.
+            min_radian: Lower bound of grid, y value.
+
+        Return:
+            None: Relocation Food object.
         """
-        high_limit = int(high_limit)
-        low_limit = int(low_limit)
-        self.goto(x=r.randint(a=low_limit, b=high_limit), y=r.randint(a=low_limit, b=high_limit))
-
-
+        location = [R.randint(min_radian, max_radian) for _ in range(2)]
+        self.goto(*location)
