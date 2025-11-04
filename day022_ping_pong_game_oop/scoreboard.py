@@ -1,31 +1,6 @@
-from turtle import Turtle, Screen
-import time
+from turtle import Turtle
 
 WINNING_PROMPT = "!CONGRATULATIONS {} PLAYER!"
-
-
-# class GameScreen(Turtle.Screen):
-#     def __init__(self, r_paddle, l_paddle):
-#         super().__init__()
-        
-#         self.r_paddle = r_paddle
-#         self.l_paddle = l_paddle
-
-    
-#     def assign_keys(self):
-#         self.listen()
-
-#         key_actions = [
-#             (self.r_paddle.paddle_up, "Up"),
-#             (self.r_paddle.paddle_down, "Down"),
-#             (self.l_paddle.paddle_up, "w"),
-#             (self.l_paddle.paddle_down, "s")
-#         ]
-#         for combo in key_actions:
-#             self.onkeypress(*combo)
-
-#         # super().exitonclick()
-        
 
 
 class Scoreboard(Turtle):
@@ -41,30 +16,10 @@ class Scoreboard(Turtle):
         self.score_right = 0
         self.refresh()
         self.winning_score = win_score
-        self.game_screen = None
-
-    def make_game_screen(self, r_paddle, l_paddle):
-        self.game_screen = Screen()
-        self.game_screen.bgcolor("black")
-        self.game_screen.title("Ping Pong")
-        self.game_screen.setup(width=800, height=600)
-
-        self.game_screen.listen()
-
-        key_actions = [
-            (r_paddle.paddle_up, "Up"),
-            (r_paddle.paddle_down, "Down"),
-            (l_paddle.paddle_up, "w"),
-            (l_paddle.paddle_down, "s")
-        ]
-        for combo in key_actions:
-            self.game_screen.onkeypress(*combo)
-
-        self.game_screen.exitonclick()
 
     def refresh(self):
         """
-        Summary: Clears scoreboard and reprints with updated scores.
+        Clears scoreboard and reprints with updated scores.
         """
         super().clear()
         super().write(
@@ -75,7 +30,7 @@ class Scoreboard(Turtle):
 
     def add_score(self, paddle_location):
         """
-        Summary: Increase player score by one.
+        Increase player score by one.
 
         Parameter:
             paddle_location (str): 'right' / 'r' or 'left' / 'l' player.
@@ -92,7 +47,7 @@ class Scoreboard(Turtle):
 
     def check_winner(self):
         """
-        Summary: Confirm (bool) if a player has the winning and determings the winner.
+        Confirm (bool) if a player has the winning and determings the winner.
 
         Return:
             - True if winner exist.

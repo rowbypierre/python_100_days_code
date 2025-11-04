@@ -18,14 +18,14 @@ class Paddle(Turtle):
 
     def paddle_up(self):
         """
-        Summary: Move paddle north/ up.
+        Move paddle north/ up.
         """
         if super().ycor() < VERTICAL_LIMITS[0]:
             super().forward(25)
 
     def paddle_down(self):
         """
-        Summary: Move paddle south/ down.
+        Move paddle south/ down.
         """
         if super().ycor() > VERTICAL_LIMITS[1]:
             super().backward(25)
