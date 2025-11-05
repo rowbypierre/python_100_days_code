@@ -12,12 +12,15 @@ game_is_on = True
 while game_is_on:
     car_manager.drive_cars()
     car_manager.return_cars()
+
     if player.has_crossed():
         game_screen.add_level()
         player.home()
         car_manager.speed_up_cars()
-    if car_manager.is_road_kill(player):
-        break
+    elif car_manager.is_road_kill(player):
+        game_screen.game_over()
+        game_is_on = False
+
     time.sleep(0.1)
     game_screen.screen_refresh()
 

@@ -28,17 +28,21 @@ class CarManager:
         return cars
 
     def drive_cars(self):
+        "Drive cars east "
         for car in self.cars:
             car.forward(self.max_speed)
 
     def speed_up_cars(self):
+        "Speed up cars."
         self.max_speed += MOVE_INCREMENT
 
     def return_cars(self):
+        "Return vehicles to start position when out of view."
         for car in self.cars:
-            if car.xcor() > 300:
+            if car.xcor() > 350:
                 car.goto(car.xcor() * -1, car.ycor())
 
     def is_road_kill(self, animal):
-        accidents = [car for car in self.cars if car.distance(animal) < 20]
-        return accidents
+        "Confirm (bool) that animal (Turtle()) has contacted a car."
+        accidents = [True if car.distance(animal) < 20 else False for car in self.cars ]
+        return any(accidents)
