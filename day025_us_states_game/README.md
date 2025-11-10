@@ -2,7 +2,8 @@
 
 ## 📘 Description
 This is a fun Python quiz game that challenges you to name all 50 U.S. states.  
-Each time you guess a state correctly, its name appears on the map at the correct location.
+Each time you guess a state correctly, its name appears on the map at the correct location.  
+Entering "Exit" will generate a study.csv file listing the missing states, saved in the project's main directory.
 
 !["Map of United States and attempts at naming each stae"](./gamplay.png)
 ---
