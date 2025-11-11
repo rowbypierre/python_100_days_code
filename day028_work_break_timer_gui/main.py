@@ -8,7 +8,7 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 1
+WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 MIN_SECS = 60
@@ -16,9 +16,19 @@ round = 0
 final_round = 8
 window_timer = None
 
+
 # ---------------------------- TIMER RESET ------------------------------- #
 def reset_timer():
+    "Start a Pomodoro timer, update UI for current round."
+
     window.after_cancel(window_timer)
+    global canvas
+    canvas.itemconfig(canvas_timer, text="00:00")
+    checks_lbl.config(text=None)
+    canvas.itemconfig(canvas_logo, text="Timer")
+    global round
+    round = 0
+
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer(min=WORK_MIN):
@@ -51,10 +61,16 @@ def start_timer(min=WORK_MIN):
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 def timer_fomat(x):
+    "Return signal digit as string with '0' prefix."
     return "0" + str(x) if x < 10 else x
 
 
 def timer(max_secs):
+    """Countdown timer updating the canvas every second.
+
+    Parameters:
+        - max_secs (int): Total seconds to count down.
+    """
     minutes = math.floor(max_secs / MIN_SECS)
     seconds = max_secs % MIN_SECS
 
@@ -62,6 +78,7 @@ def timer(max_secs):
         canvas_timer, text=f"{timer_fomat(minutes)}:{timer_fomat(seconds)}"
     )
     if max_secs > 0:
+        global window_timer
         window_timer = window.after(1000, timer, max_secs - 1)
     else:
         start_timer()
@@ -99,4 +116,5 @@ reset_btn.grid(column=2, row=1)
 
 checks_lbl = Label(text="", fg=GREEN, bg=YELLOW, font=(FONT_NAME, 50, "bold"))
 checks_lbl.grid(column=1, row=2)
+
 window.mainloop()
