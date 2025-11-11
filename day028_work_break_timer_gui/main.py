@@ -12,12 +12,21 @@ WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 MIN_SECS = 60
+round = 0
+final_round = 8
 
 # ---------------------------- TIMER RESET ------------------------------- #
 
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer(min=WORK_MIN):
+    global round, final_round
+    round += 1
+    if final_round == round:
+        min = LONG_BREAK_MIN
+    elif round % 2 == 0:
+        min = SHORT_BREAK_MIN
+
     timer(min * MIN_SECS)
 
 
