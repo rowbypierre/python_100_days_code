@@ -3,7 +3,7 @@
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
 # ---------------------------- UI SETUP ------------------------------- #
-from tkinter import Tk, PhotoImage, Canvas, Label, Entry, Button, EW, ttk
+from tkinter import Tk, PhotoImage, Canvas, Label, Entry, Button, EW
 import os
 import math
 
