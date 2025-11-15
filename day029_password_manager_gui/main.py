@@ -7,13 +7,22 @@ from copy import deepcopy
 
 
 def save_password():
-    entries = [
+    """
+    Write website, username, and password to 'data.json'.
+
+    Updates existing entries or creates the file if it doesn't exist.
+
+    Returns
+    -------
+    None
+    """
+    window_data = [
         entry.get().strip()
         for entry in window.winfo_children()
         if isinstance(entry, Entry)
     ]
 
-    login_details = {entries[0]: {"Username": entries[1], "Password": entries[2]}}
+    login_data = {window_data[0]: {"Username": window_data[1], "Password": window_data[2]}}
 
     filename = "data.json"
     file_fullpath = ""
@@ -30,10 +39,10 @@ def save_password():
             old = json.load(password_file)
 
         combined = deepcopy(old)
-        for k, v in login_details.items():
+        for k, v in login_data.items():
             combined[k] = v
     else:
-        combined = deepcopy(login_details)
+        combined = deepcopy(login_data)
 
     with open(file_fullpath, "w") as file_fullpath:
         json.dump(combined, file_fullpath, indent=2)
