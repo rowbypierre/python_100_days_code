@@ -13,41 +13,30 @@ def save_password():
         if isinstance(entry, Entry)
     ]
 
-    data_dict = {}
-    for entry in entries:
-        if entries.index(entry) == 0:
-            data_dict.update({entry: {}})
-            website = entry
-        elif entries.index(entry) == 1:
-            data_dict[website].update({"Username": entry})
-        elif entries.index(entry) == 2:
-            data_dict[website].update({"Password": entry})
+    login_details = {entries[0]: {"Username": entries[1], "Password": entries[2]}}
 
     filename = "data.json"
-    file_full_path = ""
+    file_fullpath = ""
     for parent, dirs, files in os.walk("."):
         for file in files:
             if file == filename:
-                file_full_path = os.path.join(parent, file)
+                file_fullpath = os.path.join(parent, file)
                 break
+            else:
+                file_fullpath = filename
 
-    if len(file_full_path) == 0:
-        filepath = filename
-    else:
-        filepath = file_full_path
-
-    if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
-        with open(filepath, "r") as password_file:
+    if os.path.exists(file_fullpath) and os.path.getsize(file_fullpath) > 0:
+        with open(file_fullpath, "r") as password_file:
             old = json.load(password_file)
 
         combined = deepcopy(old)
-        for k, v in data_dict.items():
+        for k, v in login_details.items():
             combined[k] = v
     else:
-        combined = deepcopy(data_dict)
+        combined = deepcopy(login_details)
 
-    with open(filepath, "w") as file_full_path:
-        json.dump(combined, file_full_path, indent=2)
+    with open(file_fullpath, "w") as file_fullpath:
+        json.dump(combined, file_fullpath, indent=2)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -128,17 +117,4 @@ generate_button.grid(column=3, row=0)
 save_button = Button(window, text="Save Password", command=save_password)
 save_button.grid(column=0, row=0)
 
-# print(window.winfo_children())
-# for entry in window.winfo_children():
-#     if isinstance(entry, Entry):
-#         print(entry.get())
-
-# def save_password():
-#     entries = [entry.get().strip for entry in window.winfo_children()
-#                if isinstance(entry, Entry)]
-#     print(entries)
-# window.e
-# entries = {"username":username_entry, "password_entry": password_entry, "website": website_entry}
-# entries = {name: entry.get().strip() for name, entry in entries.items()}
-# print(entries)
 window.mainloop()
