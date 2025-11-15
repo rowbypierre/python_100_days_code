@@ -1,9 +1,46 @@
-# ---------------------------- PASSWORD GENERATOR ------------------------------- #
-
-# ---------------------------- SAVE PASSWORD ------------------------------- #
 import json
 import os
 from copy import deepcopy
+import random
+import string
+from tkinter import messagebox
+from tkinter import Tk, PhotoImage, Canvas, Label, Entry, Button, EW
+import math
+
+
+# ---------------------------- PASSWORD GENERATOR ------------------------------- #
+def make_password():
+    """
+    Generate password containing letters, digits, and punctuations.
+
+    Password inserted to password entry box on screen and copied to clipboard.
+
+    Returns
+    -------
+    None
+    """
+    characters = string.ascii_letters + string.punctuation + string.digits
+    password = "".join(random.choices(list(characters), k=random.randint(10, 20)))
+    password_entry.insert(0, password)
+    password_entry.clipboard_append(password)
+
+
+# ---------------------------- SAVE PASSWORD ------------------------------- #
+def is_valid_fields():
+    """
+    Check for charater in all window entries.
+
+    Returns
+    -------
+    bool: True if all fields contain string else False.
+    """
+    fields = [website_entry, username_entry, password_entry]
+    fields_valid = True
+    for entry in fields:
+        if len(entry.get()) == 0:
+            fields_valid = False
+
+    return fields_valid
 
 
 def save_password():
@@ -16,44 +53,49 @@ def save_password():
     -------
     None
     """
-    window_data = [
-        entry.get().strip()
-        for entry in window.winfo_children()
-        if isinstance(entry, Entry)
-    ]
+    if is_valid_fields():
+        entries = [
+            entry for entry in window.winfo_children() if isinstance(entry, Entry)
+        ]
+        entry_data = [entry.get().strip() for entry in entries]
 
-    login_data = {window_data[0]: {"Username": window_data[1], "Password": window_data[2]}}
+        login_data = {
+            entry_data[0]: {"Username": entry_data[1], "Password": entry_data[2]}
+        }
 
-    filename = "data.json"
-    file_fullpath = ""
-    for parent, dirs, files in os.walk("."):
-        for file in files:
-            if file == filename:
-                file_fullpath = os.path.join(parent, file)
-                break
-            else:
-                file_fullpath = filename
+        filename = "data.json"
+        file_fullpath = ""
+        for parent, dirs, files in os.walk("."):
+            for file in files:
+                if file == filename:
+                    file_fullpath = os.path.join(parent, file)
+                    break
+                else:
+                    file_fullpath = filename
 
-    if os.path.exists(file_fullpath) and os.path.getsize(file_fullpath) > 0:
-        with open(file_fullpath, "r") as password_file:
-            old = json.load(password_file)
+        if os.path.exists(file_fullpath) and os.path.getsize(file_fullpath) > 0:
+            with open(file_fullpath, "r") as password_file:
+                old = json.load(password_file)
 
-        combined = deepcopy(old)
-        for k, v in login_data.items():
-            combined[k] = v
+            combined = deepcopy(old)
+            for k, v in login_data.items():
+                combined[k] = v
+        else:
+            combined = deepcopy(login_data)
+
+        with open(file_fullpath, "w") as file_fullpath:
+            json.dump(combined, file_fullpath, indent=2)
+
+        for entry in entries:
+            if entry.get() != username_entry.get():
+                entry.delete(0, "end")
+
+        messagebox.showinfo(title="SUCCESS", message="Data saved.")
     else:
-        combined = deepcopy(login_data)
-
-    with open(file_fullpath, "w") as file_fullpath:
-        json.dump(combined, file_fullpath, indent=2)
+        messagebox.showinfo(title="ERROR", message="Check for missing inputs.")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
-from tkinter import Tk, PhotoImage, Canvas, Label, Entry, Button, EW
-import os
-import math
-
-
 PADDING = 10
 WINDOW_DIM = 500
 CANVAS_DIM = {
@@ -91,7 +133,7 @@ canvas = Canvas(
     highlightthickness=0,
 )
 canvas.grid(column=1, row=0)
-canvas_icon = icon_logo.zoom(2)  # Enlarge 3x
+canvas_icon = icon_logo.zoom(2)  # Enlarge 2x
 canvas.create_image(
     (CAVAS_ICON_XY["width"], CAVAS_ICON_XY["height"]), image=canvas_icon
 )
@@ -120,7 +162,7 @@ password_label.grid(column=0, row=3, sticky=EW)
 password_entry = Entry(window)
 password_entry.grid(column=1, row=3, sticky=EW, columnspan=3)
 
-generate_button = Button(window, text="Generate Password")
+generate_button = Button(window, text="Generate Password", command=make_password)
 generate_button.grid(column=3, row=0)
 
 save_button = Button(window, text="Save Password", command=save_password)
