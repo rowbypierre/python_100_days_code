@@ -1,6 +1,54 @@
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
+import json
+import os
+from copy import deepcopy
+
+
+def save_password():
+    entries = [
+        entry.get().strip()
+        for entry in window.winfo_children()
+        if isinstance(entry, Entry)
+    ]
+
+    data_dict = {}
+    for entry in entries:
+        if entries.index(entry) == 0:
+            data_dict.update({entry: {}})
+            website = entry
+        elif entries.index(entry) == 1:
+            data_dict[website].update({"Username": entry})
+        elif entries.index(entry) == 2:
+            data_dict[website].update({"Password": entry})
+
+    filename = "data.json"
+    file_full_path = ""
+    for parent, dirs, files in os.walk("."):
+        for file in files:
+            if file == filename:
+                file_full_path = os.path.join(parent, file)
+                break
+
+    if len(file_full_path) == 0:
+        filepath = filename
+    else:
+        filepath = file_full_path
+
+    if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
+        with open(filepath, "r") as password_file:
+            old = json.load(password_file)
+
+        combined = deepcopy(old)
+        for k, v in data_dict.items():
+            combined[k] = v
+    else:
+        combined = deepcopy(data_dict)
+
+    with open(filepath, "w") as file_full_path:
+        json.dump(combined, file_full_path, indent=2)
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 from tkinter import Tk, PhotoImage, Canvas, Label, Entry, Button, EW
@@ -23,7 +71,6 @@ window = Tk()
 window.title("MYPassword Manager")
 window.geometry(f"{WINDOW_DIM + 70}x{WINDOW_DIM}")
 window.config(padx=PADDING, pady=PADDING, bg="white")
-
 
 
 icon_filename = "logo.png"
@@ -59,7 +106,7 @@ website_label.grid(
 )
 website_entry = Entry(window)
 website_entry.grid(column=1, row=1, sticky=EW, columnspan=3)
-website_entry.focus() #Cursor
+website_entry.focus()  # Cursor
 
 
 username_label = Label(
@@ -78,7 +125,20 @@ password_entry.grid(column=1, row=3, sticky=EW, columnspan=3)
 generate_button = Button(window, text="Generate Password")
 generate_button.grid(column=3, row=0)
 
-save_button = Button(window, text="Save Password")
+save_button = Button(window, text="Save Password", command=save_password)
 save_button.grid(column=0, row=0)
 
+# print(window.winfo_children())
+# for entry in window.winfo_children():
+#     if isinstance(entry, Entry):
+#         print(entry.get())
+
+# def save_password():
+#     entries = [entry.get().strip for entry in window.winfo_children()
+#                if isinstance(entry, Entry)]
+#     print(entries)
+# window.e
+# entries = {"username":username_entry, "password_entry": password_entry, "website": website_entry}
+# entries = {name: entry.get().strip() for name, entry in entries.items()}
+# print(entries)
 window.mainloop()
