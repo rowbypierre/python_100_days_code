@@ -102,6 +102,18 @@ def save_password():
 
 
 def search_password():
+    """
+    Return username and password for a website entry.
+
+    Returns
+    -------
+    str: Message box gui containing the credentials.
+
+    Raises
+    -------
+    FileNotFound: Message box notification explaining data file is not found.
+    IndexError: Message box notification explaining that data does not exist.
+    """
     datafile = find_datafile()
     try:
         with open(datafile) as data:
@@ -114,7 +126,7 @@ def search_password():
     except FileNotFoundError:
         messagebox.showwarning(
             title="File Not Found",
-            message="There is no data file to retrieve your record.",
+            message="There is no credentials file to retrieve your record.",
         )
     except KeyError:
         messagebox.showwarning(
