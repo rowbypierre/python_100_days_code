@@ -26,6 +26,21 @@ def make_password():
 
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
+def find_datafile():
+    "Return data.json absolute path if it exist, else 'data.json'"
+    filename = "data.json"
+    file_fullpath = ""
+    for parent, dirs, files in os.walk("."):
+        for file in files:
+            if file == filename:
+                file_fullpath = os.path.join(parent, file)
+                break
+            else:
+                file_fullpath = filename
+
+    return file_fullpath
+
+
 def is_valid_fields():
     """
     Check for charater in all window entries.
@@ -63,18 +78,9 @@ def save_password():
             entry_data[0]: {"Username": entry_data[1], "Password": entry_data[2]}
         }
 
-        filename = "data.json"
-        file_fullpath = ""
-        for parent, dirs, files in os.walk("."):
-            for file in files:
-                if file == filename:
-                    file_fullpath = os.path.join(parent, file)
-                    break
-                else:
-                    file_fullpath = filename
-
-        if os.path.exists(file_fullpath) and os.path.getsize(file_fullpath) > 0:
-            with open(file_fullpath, "r") as password_file:
+        file_abspath = find_datafile()
+        if os.path.exists(file_abspath) and os.path.getsize(file_abspath) > 0:
+            with open(file_abspath, "r") as password_file:
                 old = json.load(password_file)
 
             combined = deepcopy(old)
@@ -83,8 +89,8 @@ def save_password():
         else:
             combined = deepcopy(login_data)
 
-        with open(file_fullpath, "w") as file_fullpath:
-            json.dump(combined, file_fullpath, indent=2)
+        with open(file_abspath, "w") as file_abspath:
+            json.dump(combined, file_abspath, indent=2)
 
         for entry in entries:
             if entry.get() != username_entry.get():
@@ -93,6 +99,28 @@ def save_password():
         messagebox.showinfo(title="SUCCESS", message="Data saved.")
     else:
         messagebox.showinfo(title="ERROR", message="Check for missing inputs.")
+
+
+def search_password():
+    datafile = find_datafile()
+    try:
+        with open(datafile) as data:
+            logins = json.load(data)
+            logins = {k.upper(): v for k, v in logins.items()}
+            searched_login = logins[website_entry.get().strip().upper()]
+            login = f"""Username:\t{searched_login["Username"]}
+                    \nPassword:\t{searched_login["Password"]}"""
+            messagebox.showinfo(title="Login Information", message=login)
+    except FileNotFoundError:
+        messagebox.showwarning(
+            title="File Not Found",
+            message="There is no data file to retrieve your record.",
+        )
+    except KeyError:
+        messagebox.showwarning(
+            title="Record Not Found",
+            message=f"Record for {website_entry.get()} not found. Please check the website link.",
+        )
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -141,31 +169,34 @@ canvas.create_image(
 website_label = Label(window, text="Website:", padx=PADDING, pady=PADDING, bg="white")
 website_label.grid(
     column=0,
-    row=1,
+    row=2,
     sticky=EW,
 )
 website_entry = Entry(window)
-website_entry.grid(column=1, row=1, sticky=EW, columnspan=3)
+website_entry.grid(column=1, row=2, sticky=EW, columnspan=2)
 website_entry.focus()  # Cursor
 
 
 username_label = Label(
     window, text="Email/Username:", padx=PADDING, pady=PADDING, bg="white"
 )
-username_label.grid(column=0, row=2, sticky=EW)
+username_label.grid(column=0, row=3, sticky=EW)
 username_entry = Entry(window)
-username_entry.grid(column=1, row=2, sticky=EW, columnspan=3)
+username_entry.grid(column=1, row=3, sticky=EW, columnspan=2)
 username_entry.insert(0, "username@domain.com")
 
 password_label = Label(window, text="Password:", padx=PADDING, pady=PADDING, bg="white")
-password_label.grid(column=0, row=3, sticky=EW)
+password_label.grid(column=0, row=4, sticky=EW)
 password_entry = Entry(window)
-password_entry.grid(column=1, row=3, sticky=EW, columnspan=3)
+password_entry.grid(column=1, row=4, sticky=EW, columnspan=2)
 
 generate_button = Button(window, text="Generate Password", command=make_password)
-generate_button.grid(column=3, row=0)
+generate_button.grid(column=2, row=1)
 
-save_button = Button(window, text="Save Password", command=save_password)
-save_button.grid(column=0, row=0)
+save_button = Button(window, text="Save Login", command=save_password)
+save_button.grid(column=0, row=1)
+
+search_button = Button(window, text="Search Login", command=search_password)
+search_button.grid(column=1, row=1)
 
 window.mainloop()
