@@ -5,12 +5,14 @@ A small Tkinter app that lets you **generate passwords** and **save login data**
 !["Password manager window with a red lock logo and filled fields for website username and password."](./screenshots/generate_password.png)
 !["Small message box titled SUCCESS showing text Data saved with an OK button."](./screenshots/data_saved.png)
 !["Error message box titled ERROR saying Check for missing inputs shown over the app window."](./screenshots/error.png)
+!["Small message box titled Login information showing username and password of website wwwwwwwwwwwwwwwwwwww"](./screenshots/login_search.png.png)
 ## Features
 
 * Generate random passwords (letters, digits, symbols).
 * Auto-copy password to clipboard.
 * Save login info to `data.json`.
 * Updates existing entries if the website already exists.
+* Search login info from `data.json`.
 * Simple GUI built with Tkinter.
 
 ## How It Works

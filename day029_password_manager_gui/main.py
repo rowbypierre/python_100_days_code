@@ -35,8 +35,6 @@ def find_datafile():
             if file == filename:
                 file_fullpath = os.path.join(parent, file)
                 break
-            else:
-                file_fullpath = filename
 
     return file_fullpath
 
