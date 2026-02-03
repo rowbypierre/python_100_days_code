@@ -5,3 +5,4 @@ __pycache__/*
 email_key.json
 *Zone.Identifier
 login.json
+.ruff_cache/
