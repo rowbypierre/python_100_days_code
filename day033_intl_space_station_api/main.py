@@ -1,11 +1,12 @@
-from requests import request, get
 from datetime import datetime, timezone
-from math import hypot
-import smtplib
 from email.message import EmailMessage
-from os.path import exists
 from json import load
+from os.path import exists
+from math import hypot
+from requests import request, get
+import smtplib
 import time
+
 
 response = request(method="GET", url="https://ipinfo.io/json")
 response.raise_for_status()
@@ -40,9 +41,6 @@ sunset = int(sun_data["results"]["sunset"].split("T")[1].split(":")[0])
 # print(sunrise, sunset)
 
 
-# If the ISS is close to my current position
-# and it is currently dark
-# Then send me an email to tell me to look up.
 def is_space_station_overhead(location, iss_location, degrees_apart):
     """
     Determine whether the International Space Station is within a given angular distance of a location.
@@ -99,7 +97,6 @@ def send_iss_email():
 
 
 if __name__ == "__main__":
-    # BONUS: run the code every 60 seconds.
     while True:
         if is_space_station_overhead(
             location=(MY_LATITUDE, MY_LONGITUDE),
