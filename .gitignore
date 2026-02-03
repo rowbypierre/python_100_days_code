@@ -3,3 +3,5 @@ __pycache__/*
 *.zip
 .vscode/
 email_key.json
+*Zone.Identifier
+login.json
