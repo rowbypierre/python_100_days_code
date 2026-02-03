@@ -1,9 +1,6 @@
 # ISS Overhead Email Notifier
 
 A small Python project that checks whether the **International Space Station (ISS)** is near your current location and sends you an **email alert** when it is overhead at night.
-
-This project is part of a Python bootcamp and focuses on **APIs, datetime, and email automation**.
-
 ---
 
 ## What This Project Does
