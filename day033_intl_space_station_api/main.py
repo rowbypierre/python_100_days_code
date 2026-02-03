@@ -68,7 +68,7 @@ def send_iss_email():
     :return: True if the email was sent successfully; otherwise False.
     :rtype: bool
     """
-    app_login = "/home/rolarrin/projects/python_100_days_code/day032_rules_based_emailing/misc/login.json"
+    app_login = "ADD PATH HERE"
     if exists(app_login):
         app_file = open(app_login, "r")
         app_data = load(app_file)
